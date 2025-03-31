@@ -1,9 +1,10 @@
 from flask import Flask
-from .dash_apps import composicao_pib
+from .dash_apps import composicao_pib, maiores_lavouras
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
 DASH_APPS = {
-  '/pib-floriano': (composicao_pib.create_app, "Composição do PIB de Floriano")
+  '/pib-floriano': (composicao_pib.create_app, "Composição do PIB de Floriano"),
+  '/maiores-lavouras': (maiores_lavouras.create_app, "Maiores Lavouras de Floriano"),
 }
 
 def create_app():
@@ -14,13 +15,11 @@ def create_app():
   list_items = ""
 
   for url in DASH_APPS:
-      # Add pathname: dash_app mapping to middleware.
+     
       dash_mw_input[url] = DASH_APPS[url][0](url + "/")
 
-      # Add name and pathname to <li>
       list_items += "<li><a href=\"" + url + "/\">" + DASH_APPS[url][1] + "</a></li>\n"
 
-  # Integrate Flask and Dash apps using DispatcherMiddleware
   
   @app.route("/")
   def home():

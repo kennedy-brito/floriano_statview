@@ -14,17 +14,19 @@ def load_data():
         variable='498,517,513,6575,525,37,543'
     )
 
-    df = data.loc[:, ["MN", "V", "D2N", "D3N", ]]
-    df.columns = df.iloc[0]
-    df = df.iloc[1:].reset_index(drop=True)
-    df.columns = ["medida", "valor", "ano", "setor"]
+    data.columns = data.iloc[0]
+    data = data.iloc[1:].reset_index(drop=True)
+    
+    data = data.loc[:, ["Unidade de Medida", "Valor", "Ano", "Variável", ]]
+    
+    data.columns = ["medida", "valor", "ano", "setor"]
 
     # Limpeza e transformação dos dados
-    df["valor"] = df["valor"].replace(["-", "..", "...", "X"], "0").astype(float) * 1000
-    df["ano"] = pd.to_numeric(df["ano"], errors="coerce").fillna(0).astype(int)
+    data["valor"] = data["valor"].replace(["-", "..", "...", "X"], "0").astype(float) * 1000
+    data["ano"] = pd.to_numeric(data["ano"], errors="coerce").fillna(0).astype(int)
 
     # Limpeza dos nomes dos setores
-    df["setor"] = df["setor"].replace(
+    data["setor"] = data["setor"].replace(
         {
             "Valor adicionado bruto a preços correntes da ": "",
             "Valor adicionado bruto a preços correntes dos ": "",
@@ -34,7 +36,7 @@ def load_data():
         regex=True
     )
 
-    return df
+    return data
 
 df = load_data()
 

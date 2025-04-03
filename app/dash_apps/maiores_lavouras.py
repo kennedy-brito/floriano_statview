@@ -17,27 +17,28 @@ def load_data() -> pd.DataFrame:
     data.columns = data.iloc[0]
     data = data.iloc[1:].reset_index(drop=True)
     
+    data = data.loc[:, ["Unidade de Medida","Valor","Ano","Produto das lavouras temporárias e permanentes"]]
+    
+    data.columns = ["medida", "quantidade", "ano", "produto"]
+    
     data = data[
-      (data["Valor"] != '...') &
-      (data["Unidade de Medida"] == 'Toneladas') &
-      (data["Valor"] != 'X')
+      (data["quantidade"] != '...') &
+      (data["medida"] == 'Toneladas') &
+      (data["quantidade"] != 'X')
     ]
     
-    data.loc[:,"Valor"] = data.loc[:,"Valor"].replace(['-', '..'], value='0')
-    data.loc[:,"Valor"] = data.loc[:,"Valor"].str.strip()
-    data.loc[:,"Valor"] = pd.to_numeric( data.loc[:,"Valor"], errors="coerce").fillna(0).astype(np.int32)
-    data.loc[:,"Ano"] = pd.to_numeric( data.loc[:,"Ano"], errors="coerce").fillna(0).astype(np.int32)
+    data.loc[:,"quantidade"] = data.loc[:,"quantidade"].replace(['-', '..'], value='0')
+    data.loc[:,"quantidade"] = data.loc[:,"quantidade"].str.strip()
+    data.loc[:,"quantidade"] = pd.to_numeric( data.loc[:,"quantidade"], errors="coerce").fillna(0).astype(np.int32)
+    data.loc[:,"ano"] = pd.to_numeric( data.loc[:,"ano"], errors="coerce").fillna(0).astype(np.int32)
     
-    data = data[data["Ano"] >= 2002]
-    data = data.iloc[:, [3,4,8,12]]
-    data.columns = ["medida", "unidade", "ano", "produto"]
+    data = data[data["ano"] >= 2002]
     
-    data = data.query("unidade != 0")
+    data = data.query("quantidade != 0")
     
     
     return data
     
-
 df = load_data()
 
 year_range_slider = dcc.RangeSlider(
@@ -89,7 +90,6 @@ def create_layout():
             ]
         )
     
-
 def get_lavouras_df(init_year, final_year, top_productions):
     """Filtra os dados com base no intervalo de anos selecionado e na quantidade de produções selecionada."""
     
@@ -97,7 +97,7 @@ def get_lavouras_df(init_year, final_year, top_productions):
     
     return (
         filtered_df
-          .sort_values(["ano", "unidade"], ascending=[True, False])
+          .sort_values(["ano", "quantidade"], ascending=[True, False])
           .groupby("ano", group_keys=False)
           .head(top_productions)
     )
@@ -108,9 +108,9 @@ def update_graph(year_range, top_productions):
 
     fig = px.bar(
       data_frame=filtered_df,
-      y="unidade",
+      y="quantidade",
       x="ano",
-      text="unidade",
+      text="quantidade",
       orientation="v",
       color="produto",
       color_discrete_sequence=px.colors.qualitative.Set2,

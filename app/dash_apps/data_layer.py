@@ -88,4 +88,48 @@ def get_total_pib()-> pd.Series:
   
   return total_pib
   
+def get_top_population_city()-> pd.DataFrame:
+  """
+  Retrieves the most populated cities of Piauí,
+  the result is of the latest Census.
+  Return:
+    total: a pandas DataFrame with columns being
+      'populacao'
+      'municipio'
+      'ano'
+  """
+  with open('./piaui_city_codes', 'r') as file:
+    city_codes = file.readline()
   
+  population_of_cities = '9605'
+  city='6'
+  population='93'
+
+  cities_population = sd.get_table(
+      table_code=population_of_cities,
+      territorial_level=city,
+      categories=9521,
+      variable=population,
+      ibge_territorial_code=city_codes,
+      period='last'
+      )
+
+  cities_population = cities_population.loc[:, ['V', 'D1N', 'D2N']]
+
+  cities_population.columns = ['populacao', 'municipio', 'ano']
+
+  cities_population = cities_population.iloc[1:].reset_index(drop=True)
+
+  cities_population['municipio'] = cities_population['municipio'].str.replace(' (PI)', '', regex=False)
+
+  cities_population.loc[:,"populacao"] = pd.to_numeric( cities_population.loc[:,"populacao"], errors="coerce").fillna(0).astype(np.int32)
+
+  cities_population.loc[:,"ano"] = pd.to_numeric( cities_population.loc[:,"ano"], errors="coerce").fillna(0).astype(np.int32)
+
+  cities_population = cities_population.sort_values('populacao',ascending=False)
+
+  top_population = cities_population.head(10)
+
+  top_population = top_population.reset_index(drop=True)
+
+  return top_population

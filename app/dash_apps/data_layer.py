@@ -2,8 +2,13 @@ import sidrapy as sd
 import pandas as pd
 import numpy as np
 
-def get_population_total():
-  
+def get_population_total() -> pd.Series:
+  """
+  Retrieves the total population of Floriano,
+  the result is of the latest Census.
+  Return:
+    total: a pandas Series with a 'total_populacao' and a 'ano' row
+  """
   population_by_gender_and_race = '9605'
   city='6'
   population='93'
@@ -26,7 +31,13 @@ def get_population_total():
 
   return total
 
-def get_age_group():
+def get_age_group() -> pd.DataFrame:
+  """
+  Retrieves the age group of the population of Floriano,
+  the result is of the latest Census.
+  Return:
+    total: a pandas DataFrame with columns being 'valor', 'ano' and 'grupo_idade'
+  """
   population_age_group = '9606'
   city='6'
   population='93'
@@ -43,14 +54,20 @@ def get_age_group():
       )
 
   age_group = age_group.loc[:,['V','D2N','D4N']]
-  age_group.columns = age_group.iloc[0]
+  age_group.columns = ["valor", "ano", "grupo_idade"]
   age_group = age_group.iloc[1:].reset_index(drop=True)
 
-  age_group.loc[:,"Valor"] = pd.to_numeric( age_group.loc[:,"Valor"], errors="coerce").fillna(0).astype(np.int32)
+  age_group.loc[:,"valor"] = pd.to_numeric( age_group.loc[:,"valor"], errors="coerce").fillna(0).astype(np.int32)
   
   return age_group
 
-def get_total_pib():
+def get_total_pib()-> pd.Series:
+  """
+  Retrieves the total pib of Floriano,
+  the result is of the latest Census.
+  Return:
+    total_pib: a pandas Series with a 'total' and a 'ano' row
+  """
   pib_composition='5938'
   city='6'
   floriano_code='2203909'
@@ -68,6 +85,7 @@ def get_total_pib():
   total_pib = total_pib.iloc[1]
   total_pib['total'] = int(total_pib['total'])*1000
   total_pib['ano'] = int(total_pib['ano']) 
-  total_pib
+  
+  return total_pib
   
   

@@ -59,13 +59,13 @@ def create_layout():
 def update_graph():
     """Cria o gráfico de comparação entre as taxas de alfabetismo"""
     
-
     fig = px.line(
       data_frame=df,
       y="quantidade",
       x="grupo",
-      text="quantidade",
       color="local",
+      labels={"quantidade": "Taxa de Alfabetização (%)", "grupo": "Faixa Etária", "local": "Localidade"},
+      markers=True,
       color_discrete_sequence=px.colors.qualitative.Set2,
     )
 
@@ -75,7 +75,9 @@ def update_graph():
             
             tickmode='linear',
             dtick=1
-        )
+        ),
+        yaxis=dict(
+            range=[50, 100])
     )   
     
     return fig 

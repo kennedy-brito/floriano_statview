@@ -98,7 +98,7 @@ def get_top_population_city()-> pd.DataFrame:
       'municipio'
       'ano'
   """
-  with open('./piaui_city_codes', 'r') as file:
+  with open('app/dash_apps/piaui_city_codes.txt', 'r') as file:
     city_codes = file.readline()
   
   population_of_cities = '9605'
@@ -169,6 +169,7 @@ def get_population_by_race() -> pd.DataFrame:
   return distribuition
 
 def get_population_by_local() -> pd.DataFrame:
+  
   """
   Retrieves the local distribution of the population of Floriano,
   the result is of the latest Census.
@@ -201,3 +202,11 @@ def get_population_by_local() -> pd.DataFrame:
   distribuition.loc[:,"ano"] = pd.to_numeric( distribuition.loc[:,"ano"], errors="coerce").fillna(0).astype(np.int32)
 
   return distribuition
+
+if __name__ == '__main__':
+  get_population_total() 
+  get_age_group() 
+  get_total_pib()
+  get_top_population_city()
+  get_population_by_race() 
+  print(get_population_by_local()) 

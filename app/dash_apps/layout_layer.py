@@ -5,66 +5,41 @@ import numpy as np
 import sidrapy as sd
 from . import graph_layer as graph
 
+def card_metric(title: str, value: str):
+  return html.Div(
+      className="metric-card",
+      children=[
+          html.P(title),
+          html.H3(value)
+      ]
+  )
+
+
+def card_graph(title: str, graph_id: str, figure):
+  return html.Div(
+      className="graph-card",
+      children=[
+          html.P(title),
+          dcc.Graph(id=graph_id, figure=figure)
+      ]
+  )
+
+
 def create_layout():
-    """Cria o layout do aplicativo Dash."""
-    return html.Div(
-        children = [
-          html.Header(
-            children= [
-              html.P('Floriano StatView - Informações Gerais'),
-              html.Main(
-                id='content',
-                children=[
-                  html.Div(
-                    id='total-population',
-                    children=[
-                      html.P("População Total"),
-                      html.H3(f"{graph.get_metric_total_population()}")
-                    ]
-                  ),
-                  html.Div(
-                    id='local-distribution',
-                    children=[
-                      html.P("Distribuição da População por Local"),
-                      dcc.Graph(id='location-distribution-graph', figure=graph.location_distribution())
-                    ]
-                  ),
-                  html.Div(
-                    id='race-distribution',
-                    children=[
-                      html.P("Distribuição da População por Cor"),
-                      dcc.Graph(id='race-distribution-graph', figure=graph.race_distribution())
-                    ]
-                  ),
-                  html.Div(
-                    id='total-pib',
-                    children=[
-                      html.P("Pib de Floriano"),
-                      html.H3(graph.get_metric_total_pib())
-                    ]
-                  ),
-                  html.Div(
-                    id='age-pyramid',
-                    children=[
-                      html.P("Faixa Etária da cidade"),
-                      dcc.Graph(id='age-pyramid-graph', figure=graph.age_pyramid())
-                      
-                    ]
-                  ),
-                  html.Div(
-                    id='most-populated-cities',
-                    children=[
-                      html.P("Cidades Mais Populosas do Piauí"),
-                      dcc.Graph(id='most-populated-cities-graph', figure=graph.most_populated_cities())
-                      
-                    ]
-                  ),
-                ]
-              )
-            ]
-          )
-        ]
-        )
+  """Cria o layout do aplicativo Dash."""
+  return html.Div([
+      html.Header([
+          html.H1('Floriano StatView - Informações Gerais')
+      ]),
+      html.Main(id='content', children=[
+          card_metric("População Total", graph.get_metric_total_population()),
+          card_graph("Distribuição da População por Local", 'location-distribution-graph', graph.location_distribution()),
+          card_graph("Distribuição da População por Cor", 'race-distribution-graph', graph.race_distribution()),
+          card_metric("PIB de Floriano", graph.get_metric_total_pib()),
+          card_graph("Faixa Etária da Cidade", 'age-pyramid-graph', graph.age_pyramid()),
+          card_graph("Cidades Mais Populosas do Piauí", 'most-populated-cities-graph', graph.most_populated_cities())
+      ])
+  ])
 
 def create_app(url_path, server=None):
     """Cria e retorna o servidor Flask para o app Dash."""

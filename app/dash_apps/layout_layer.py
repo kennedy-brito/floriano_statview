@@ -7,7 +7,7 @@ from . import graph_layer as graph
 
 def card_metric(title: str, value: str):
   return html.Div(
-      className="metric-card",
+      className="metric-card card",
       children=[
           html.P(title),
           html.H3(value)
@@ -17,7 +17,7 @@ def card_metric(title: str, value: str):
 
 def card_graph(title: str, graph_id: str, figure):
   return html.Div(
-      className="graph-card",
+      className="graph-card card",
       children=[
           html.P(title),
           dcc.Graph(id=graph_id, figure=figure)
@@ -32,12 +32,17 @@ def create_layout():
           html.H1('Floriano StatView - Informações Gerais')
       ]),
       html.Main(id='content', children=[
-          card_metric("População Total", graph.get_metric_total_population()),
-          card_graph("Distribuição da População por Local", 'location-distribution-graph', graph.location_distribution()),
-          card_graph("Distribuição da População por Cor", 'race-distribution-graph', graph.race_distribution()),
-          card_metric("PIB de Floriano", graph.get_metric_total_pib()),
+        
+        html.Div([
+            card_metric("População Total", graph.get_metric_total_population()),
+            card_metric("PIB de Floriano", graph.get_metric_total_pib()),
+          
+          ], className='metric-row'),
+        
           card_graph("Faixa Etária da Cidade", 'age-pyramid-graph', graph.age_pyramid()),
-          card_graph("Cidades Mais Populosas do Piauí", 'most-populated-cities-graph', graph.most_populated_cities())
+          card_graph("Cidades Mais Populosas do Piauí", 'most-populated-cities-graph', graph.most_populated_cities()),
+          card_graph("Distribuição da População por Local", 'location-distribution-graph', graph.location_distribution()),
+          card_graph("Distribuição da População por Cor", 'race-distribution-graph', graph.race_distribution())
       ])
   ])
 

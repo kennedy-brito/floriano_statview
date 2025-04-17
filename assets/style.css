@@ -1,0 +1,79 @@
+/* Layout base */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #c1cdfe;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin: 1rem 0;
+}
+
+main#content {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+
+/* Card base */
+.card {
+  background-color: #e9e9e9;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.25rem 1.5rem;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.01);
+}
+
+/* Cards específicos */
+
+.metric-card{
+  height: 30%;
+}
+
+.metric-card p {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin: 0;
+}
+
+.metric-card h3 {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin: 0.25rem 0 0;
+}
+
+.graph-card p {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #34495e;
+  margin-bottom: 0.75rem;
+}
+
+/* Gráfico responsivo */
+.graph-card .dash-graph {
+  height: 350px;
+}
+
+/* Linha exclusiva para cards de métrica */
+.metric-row {
+  display: flex;
+  gap: 1.7rem;
+  margin: 0 2rem 2rem 2rem;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.metric-row .metric-card {
+  flex: 1;
+  min-width: 250px;
+  max-width: 400px;
+}

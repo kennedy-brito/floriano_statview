@@ -46,13 +46,17 @@ def create_layout():
                   html.Div(
                     id='age-pyramid',
                     children=[
-                      html.P("It's working")
+                      html.P("Faixa Etária da cidade"),
+                      dcc.Graph(id='age-pyramid-graph', figure=graph.age_pyramid())
+                      
                     ]
                   ),
                   html.Div(
                     id='most-populated-cities',
                     children=[
-                      html.P("It's working")
+                      html.P("Cidades Mais Populosas do Piauí"),
+                      dcc.Graph(id='most-populated-cities-graph', figure=graph.most_populated_cities())
+                      
                     ]
                   ),
                 ]

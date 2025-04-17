@@ -133,3 +133,31 @@ def get_top_population_city()-> pd.DataFrame:
   top_population = top_population.reset_index(drop=True)
 
   return top_population
+
+def get_population_by_race() -> pd.DataFrame:
+  population_by_race = '9605'
+  city='6'
+  race='86'
+  floriano_code='2203909'
+  population_perc = '1000093'
+  distribuicao = sd.get_table(
+      table_code=population_by_race,
+      territorial_level=city,
+      classification=race,
+      # Branca, Preta, Amarela, Parda, Indígena
+      categories='2776,2777,2778,2779,2780', 
+      variable=population_perc,
+      ibge_territorial_code=floriano_code,
+      period='last'
+      )
+
+  distribuicao = distribuicao.loc[:, ['V','D2N', 'D4N']]
+  distribuicao.columns = ['porcentagem', 'ano', 'raca']
+  distribuicao = distribuicao.iloc[1:].reset_index(drop=True)
+
+
+  distribuicao.loc[:,"porcentagem"] = pd.to_numeric( distribuicao.loc[:,"porcentagem"], errors="coerce").fillna(0).astype(np.float32)
+
+  distribuicao.loc[:,"ano"] = pd.to_numeric( distribuicao.loc[:,"ano"], errors="coerce").fillna(0).astype(np.int32)
+
+  return distribuicao

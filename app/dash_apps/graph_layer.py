@@ -43,6 +43,9 @@ def location_distribution()->Figure:
 
   return graph
 
+def get_metric_total_population():
+  return data.get_population_total()['total_populacao']
+
 if __name__ == '__main__':
   print(age_pyramid())
   print(most_populated_cities())

@@ -11,7 +11,49 @@ def create_layout():
         children = [
           html.Header(
             children= [
-              html.P('Floriano StatView - Informações Gerais')
+              html.P('Floriano StatView - Informações Gerais'),
+              html.Main(
+                id='content',
+                children=[
+                  html.Div(
+                    id='total-population',
+                    children=[
+                      html.P("População Total"),
+                      html.H3(f"{graph.get_metric_total_population()}")
+                    ]
+                  ),
+                  html.Div(
+                    id='local-distribution',
+                    children=[
+                      html.P("It's working")
+                    ]
+                  ),
+                  html.Div(
+                    id='race-distribution',
+                    children=[
+                      html.P("It's working")
+                    ]
+                  ),
+                  html.Div(
+                    id='total-pib',
+                    children=[
+                      html.P("It's working")
+                    ]
+                  ),
+                  html.Div(
+                    id='age-pyramid',
+                    children=[
+                      html.P("It's working")
+                    ]
+                  ),
+                  html.Div(
+                    id='most-populated-cities',
+                    children=[
+                      html.P("It's working")
+                    ]
+                  ),
+                ]
+              )
             ]
           )
         ]

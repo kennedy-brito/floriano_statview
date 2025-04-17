@@ -32,7 +32,8 @@ def create_layout():
                   html.Div(
                     id='race-distribution',
                     children=[
-                      html.P("It's working")
+                      html.P("Distribuição da População por Cor"),
+                      dcc.Graph(id='race-distribution-graph', figure=graph.race_distribution())
                     ]
                   ),
                   html.Div(

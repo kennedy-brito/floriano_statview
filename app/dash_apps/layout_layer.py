@@ -39,7 +39,8 @@ def create_layout():
                   html.Div(
                     id='total-pib',
                     children=[
-                      html.P("It's working")
+                      html.P("Pib de Floriano"),
+                      html.H3(graph.get_metric_total_pib())
                     ]
                   ),
                   html.Div(

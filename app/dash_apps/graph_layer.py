@@ -34,7 +34,17 @@ def race_distribution()->Figure:
 
   return graph
 
+def location_distribution()->Figure:
+  graph = px.pie(
+    data_frame=data.get_population_by_local(),
+    names='local',
+    values='porcentagem'
+  )
+
+  return graph
+
 if __name__ == '__main__':
   print(age_pyramid())
   print(most_populated_cities())
   print(race_distribution())
+  print(location_distribution())

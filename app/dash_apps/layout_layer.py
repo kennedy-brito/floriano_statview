@@ -25,7 +25,8 @@ def create_layout():
                   html.Div(
                     id='local-distribution',
                     children=[
-                      html.P("It's working")
+                      html.P("Distribuição da População por Local"),
+                      dcc.Graph(id='location-distribution-graph', figure=graph.location_distribution())
                     ]
                   ),
                   html.Div(

@@ -25,6 +25,16 @@ def most_populated_cities()->Figure:
 
   return graph
 
+def race_distribution()->Figure:
+  graph = px.pie(
+    data_frame=data.get_population_by_race(),
+    names='raca',
+    values='porcentagem'
+  )
+
+  return graph
+
 if __name__ == '__main__':
   print(age_pyramid())
   print(most_populated_cities())
+  print(race_distribution())

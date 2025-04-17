@@ -1,9 +1,10 @@
 import pandas as pd
 import numpy as np
 import plotly.express as px
+from plotly.graph_objs import Figure
 import data_layer as data
 
-def age_pyramid()->px.Figure:
+def age_pyramid()->Figure:
   graph = px.bar(
     data_frame=data.get_age_group(),
     x='valor',
@@ -12,6 +13,18 @@ def age_pyramid()->px.Figure:
 
   return graph
 
+def most_populated_cities()->Figure:
+  graph = px.bar(
+    data_frame=data.get_top_population_city(),
+    x='populacao',
+    y='municipio',
+    orientation='h',
+    )
+
+  graph.update_layout(yaxis=dict(autorange="reversed"))
+
+  return graph
 
 if __name__ == '__main__':
   print(age_pyramid())
+  print(most_populated_cities())

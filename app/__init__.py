@@ -1,8 +1,9 @@
 from flask import Flask
-from .dash_apps import composicao_pib, maiores_lavouras, taxa_alfabetizacao_idade
+from .dash_apps import composicao_pib, maiores_lavouras, taxa_alfabetizacao_idade, layout_layer
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
 DASH_APPS = {
+  '/floriano-statview': (layout_layer.create_app, "Floriano Statview"),
   '/pib-floriano': (composicao_pib.create_app, "Composição do PIB de Floriano"),
   '/maiores-lavouras': (maiores_lavouras.create_app, "Maiores Lavouras de Floriano"),
   '/taxa-alfabetizacao': (taxa_alfabetizacao_idade.create_app, "Taxa de Alfabetização - Floriano - Piauí - Brasil"),

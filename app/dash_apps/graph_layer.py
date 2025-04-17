@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 from plotly.graph_objs import Figure
-import data_layer as data
+from . import data_layer as data
 
 def age_pyramid()->Figure:
   graph = px.bar(

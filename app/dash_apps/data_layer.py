@@ -135,12 +135,18 @@ def get_top_population_city()-> pd.DataFrame:
   return top_population
 
 def get_population_by_race() -> pd.DataFrame:
+  """
+  Retrieves the race distribution of the population of Floriano,
+  the result is of the latest Census.
+  Return:
+    distribuition: a pandas DataFrame with columns being 'porcentagem', 'ano' and 'raca'
+  """
   population_by_race = '9605'
   city='6'
   race='86'
   floriano_code='2203909'
   population_perc = '1000093'
-  distribuicao = sd.get_table(
+  distribuition = sd.get_table(
       table_code=population_by_race,
       territorial_level=city,
       classification=race,
@@ -151,24 +157,30 @@ def get_population_by_race() -> pd.DataFrame:
       period='last'
       )
 
-  distribuicao = distribuicao.loc[:, ['V','D2N', 'D4N']]
-  distribuicao.columns = ['porcentagem', 'ano', 'raca']
-  distribuicao = distribuicao.iloc[1:].reset_index(drop=True)
+  distribuition = distribuition.loc[:, ['V','D2N', 'D4N']]
+  distribuition.columns = ['porcentagem', 'ano', 'raca']
+  distribuition = distribuition.iloc[1:].reset_index(drop=True)
 
 
-  distribuicao.loc[:,"porcentagem"] = pd.to_numeric( distribuicao.loc[:,"porcentagem"], errors="coerce").fillna(0).astype(np.float32)
+  distribuition.loc[:,"porcentagem"] = pd.to_numeric( distribuition.loc[:,"porcentagem"], errors="coerce").fillna(0).astype(np.float32)
 
-  distribuicao.loc[:,"ano"] = pd.to_numeric( distribuicao.loc[:,"ano"], errors="coerce").fillna(0).astype(np.int32)
+  distribuition.loc[:,"ano"] = pd.to_numeric( distribuition.loc[:,"ano"], errors="coerce").fillna(0).astype(np.int32)
 
-  return distribuicao
+  return distribuition
 
 def get_population_by_local() -> pd.DataFrame:
+  """
+  Retrieves the local distribution of the population of Floriano,
+  the result is of the latest Census.
+  Return:
+    distribuition: a pandas DataFrame with columns being 'porcentagem', 'ano' and 'local'
+  """
   population_by_local = '9923'
   city='6'
   local='1'
   floriano_code='2203909'
   population_perc = '1000093'
-  distribuicao = sd.get_table(
+  distribuition = sd.get_table(
       table_code=population_by_local,
       territorial_level=city,
       classification=local,
@@ -179,13 +191,13 @@ def get_population_by_local() -> pd.DataFrame:
       )
 
 
-  distribuicao = distribuicao.loc[:, ['V','D2N', 'D4N']]
-  distribuicao.columns = ['porcentagem', 'ano', 'local']
-  distribuicao = distribuicao.iloc[1:].reset_index(drop=True)
+  distribuition = distribuition.loc[:, ['V','D2N', 'D4N']]
+  distribuition.columns = ['porcentagem', 'ano', 'local']
+  distribuition = distribuition.iloc[1:].reset_index(drop=True)
 
 
-  distribuicao.loc[:,"porcentagem"] = pd.to_numeric( distribuicao.loc[:,"porcentagem"], errors="coerce").fillna(0).astype(np.float32)
+  distribuition.loc[:,"porcentagem"] = pd.to_numeric( distribuition.loc[:,"porcentagem"], errors="coerce").fillna(0).astype(np.float32)
 
-  distribuicao.loc[:,"ano"] = pd.to_numeric( distribuicao.loc[:,"ano"], errors="coerce").fillna(0).astype(np.int32)
+  distribuition.loc[:,"ano"] = pd.to_numeric( distribuition.loc[:,"ano"], errors="coerce").fillna(0).astype(np.int32)
 
-  return distribuicao
+  return distribuition

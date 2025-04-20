@@ -5,12 +5,13 @@ import numpy as np
 import sidrapy as sd
 from . import graph_layer as graph
 
-def card_metric(title: str, value: str):
+def card_metric(title: str, value: str, footnote: str = None):
   return html.Div(
       className="metric-card card",
       children=[
           html.P(title),
-          html.H3(value)
+          html.H3(value),
+          html.P(footnote, className='footnote')
       ]
   )
 
@@ -34,8 +35,8 @@ def create_layout():
       html.Main(id='content', children=[
         
         html.Div([
-            card_metric("População Total", graph.get_metric_total_population()),
-            card_metric("PIB de Floriano", graph.get_metric_total_pib()),
+            card_metric("População Total", graph.get_metric_total_population(), graph.get_metric_total_population_info()),
+            card_metric("PIB de Floriano", graph.get_metric_total_pib(), graph.get_metric_total_pib_info()),
           
           ], className='metric-row'),
         

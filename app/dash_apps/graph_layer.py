@@ -46,9 +46,14 @@ def location_distribution()->Figure:
 def get_metric_total_population():
   return data.get_population_total()['total_populacao']
 
+def get_metric_total_population_info():
+  return f"Último Censo: {data.get_population_total()['ano']}"
 
 def get_metric_total_pib():
   return data.get_total_pib()['total']
+
+def get_metric_total_pib_info():
+  return f"Último Censo: {data.get_total_pib()['ano']}"
 
 if __name__ == '__main__':
   print(age_pyramid())

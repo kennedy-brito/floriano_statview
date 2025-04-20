@@ -4,6 +4,14 @@ import plotly.express as px
 from plotly.graph_objs import Figure
 from . import data_layer as data
 
+def format_pib(value):
+    if value >= 1_000_000_000:
+        return f"R$ {value / 1_000_000_000:.2f} bi".replace(".", ",")
+    elif value >= 1_000_000:
+        return f"R$ {value / 1_000_000:.2f} mi".replace(".", ",")
+    else:
+        return f"R$ {value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
 def age_pyramid()->Figure:
   graph = px.bar(
     data_frame=data.get_age_group(),
@@ -50,7 +58,10 @@ def get_metric_total_population_info():
   return f"Último Censo: {data.get_population_total()['ano']}"
 
 def get_metric_total_pib():
-  return data.get_total_pib()['total']
+  value = data.get_total_pib()['total']
+  moeda = format_pib(value)
+  # moeda = f"R$ {value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+  return moeda
 
 def get_metric_total_pib_info():
   return f"Último Censo: {data.get_total_pib()['ano']}"

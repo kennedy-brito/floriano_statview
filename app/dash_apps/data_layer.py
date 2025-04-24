@@ -299,9 +299,31 @@ def get_pib_per_capita(year='last'):
   return pd.Series({'pib_per_capita':pib_per_capita, 'ano': pib['ano']})
 
 def get_literacy_rate(level=6, code='2203909', year='last') -> pd.DataFrame:
-  """Carrega e processa os dados de taxa de alfabetismo de Floriano, do Piauí e do Brasil."""
+  """
+  Carrega e processa os dados da taxa de alfabetização a partir da tabela SIDRA (código 9543).
+
+  Os dados retornados correspondem à taxa de alfabetismo por grupo etário e localização 
+  (Município, Estado ou Brasil), conforme especificado nos parâmetros. O DataFrame retornado 
+  está limpo e pronto para análise ou visualização.
+
+  Args:
+      level (int): Nível territorial da consulta. Os valores comuns são:
+          - 6: Município
+          - 2: Unidade da Federação (Estado)
+          - 1: Brasil
+      code (str): Código IBGE do território consultado. Por padrão, '2203909' representa o município de Floriano (PI).
+      year (str): Ano da consulta. Pode ser um ano específico (ex: '2022') ou 'last' para pegar o dado mais recente disponível.
+
+  Returns:
+      pd.DataFrame: DataFrame com as colunas:
+          - 'medida': Tipo de medida (ex: percentual ou número absoluto)
+          - 'quantidade': Valor da medida
+          - 'grupo': Grupo populacional (ex: faixa etária)
+          - 'local': Nome do local (ex: Floriano, Piauí, Brasil)
+          - 'ano': Ano do dado
+  """
   
-  data = sd.get_table(
+  literacy_rate = sd.get_table(
     table_code='9543',
     period=year,
     territorial_level=level,
@@ -310,17 +332,17 @@ def get_literacy_rate(level=6, code='2203909', year='last') -> pd.DataFrame:
     ibge_territorial_code=code,
     variable='2513')
   
-  data = data.loc[:, ["MN", "V", "D4N", "D1N", "D2N"]]
+  literacy_rate = literacy_rate.loc[:, ["MN", "V", "D4N", "D1N", "D2N"]]
   
-  data.columns = data.iloc[0]
+  literacy_rate.columns = literacy_rate.iloc[0]
   
-  data = data.iloc[1:].reset_index(drop=True)
+  literacy_rate = literacy_rate.iloc[1:].reset_index(drop=True)
 
-  data.columns = ["medida", "quantidade", "grupo", "local", "ano"]
+  literacy_rate.columns = ["medida", "quantidade", "grupo", "local", "ano"]
   
-  data.loc[:,"quantidade"] = pd.to_numeric( data.loc[:,"quantidade"], errors="coerce").fillna(0).astype(np.float32)
+  literacy_rate.loc[:,"quantidade"] = pd.to_numeric( literacy_rate.loc[:,"quantidade"], errors="coerce").fillna(0).astype(np.float32)
    
-  return data
+  return literacy_rate
   
 if __name__ == '__main__':
   print("🔍 Testando funções de coleta de dados do SIDRA (Floriano - PI)\n")

@@ -126,6 +126,21 @@ def location_distribution(level: str = '6', local_code: str = '2203909', year: s
   return graph
 
 def comparison_population_literacy():
+  """
+  Compara graficamente a taxa de alfabetização por faixa etária entre Floriano (PI), o estado do Piauí e o Brasil.
+
+  Esta função utiliza dados da tabela SIDRA sobre a taxa de alfabetismo, gera um gráfico de linha usando Plotly Express
+  e retorna a figura. A comparação é feita com base em faixas etárias, e o gráfico permite visualizar as diferenças
+  regionais nos níveis de alfabetização.
+
+  Dados utilizados:
+      - Floriano: nível territorial 6, código IBGE 2203909
+      - Piauí: nível territorial 3, código IBGE 22
+      - Brasil: nível territorial 1, código IBGE 1
+
+  Returns:
+      plotly.graph_objs._figure.Figure: Objeto de figura contendo o gráfico de linha com os dados de alfabetização.
+  """
   floriano_dt = data.get_literacy_rate(level= 6,code=2203909)
     
   piaui_dt = data.get_literacy_rate(level= 3,code=22)

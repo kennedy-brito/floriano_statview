@@ -39,13 +39,20 @@ def create_layout():
             card_metric("PIB de Floriano", graph.get_metric_total_pib(), graph.get_metric_total_pib_info()),
             card_metric("PIB Per Capita de Floriano", graph.get_metric_pib_per_capita(), graph.get_metric_pib_per_capita_info()),
           
-          ], className='metric-row'),
+          ], className='metric-row row'),
         
-          card_graph("Faixa Etária da Cidade", 'age-pyramid-graph', graph.age_pyramid()),
-          card_graph("Cidades Mais Populosas do Piauí", 'most-populated-cities-graph', graph.most_populated_cities()),
-          card_graph("Distribuição da População por Local", 'location-distribution-graph', graph.location_distribution()),
-          card_graph("Distribuição da População por Cor", 'race-distribution-graph', graph.race_distribution()),
-          card_graph("Taxa de Alfabetização - Brasil x Piauí x Floriano", 'comparison-literacy-graph', graph.comparison_population_literacy())
+        html.Div([
+            card_graph("Faixa Etária da Cidade", 'age-pyramid-graph', graph.age_pyramid()),
+            card_graph("Cidades Mais Populosas do Piauí", 'most-populated-cities-graph', graph.most_populated_cities()),
+            card_graph("Distribuição da População por Local", 'location-distribution-graph', graph.location_distribution()),
+          
+          ], className='metric-row row'),
+          
+        html.Div([
+            card_graph("Distribuição da População por Cor", 'race-distribution-graph', graph.race_distribution()),
+            card_graph("Taxa de Alfabetização - Brasil x Piauí x Floriano", 'comparison-literacy-graph', graph.comparison_population_literacy())
+          ], className='metric-row row'
+        )
       ])
   ])
 

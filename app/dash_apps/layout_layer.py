@@ -44,15 +44,16 @@ def create_layout():
           card_graph("Faixa Etária da Cidade", 'age-pyramid-graph', graph.age_pyramid()),
           card_graph("Cidades Mais Populosas do Piauí", 'most-populated-cities-graph', graph.most_populated_cities()),
           card_graph("Distribuição da População por Local", 'location-distribution-graph', graph.location_distribution()),
-          card_graph("Distribuição da População por Cor", 'race-distribution-graph', graph.race_distribution())
+          card_graph("Distribuição da População por Cor", 'race-distribution-graph', graph.race_distribution()),
+          card_graph("Taxa de Alfabetização - Brasil x Piauí x Floriano", 'comparison-literacy-graph', graph.comparison_population_literacy())
       ])
   ])
 
 def create_app(url_path, server=None):
-    """Cria e retorna o servidor Flask para o app Dash."""
-    app = Dash(requests_pathname_prefix=url_path)
-    app.title = "Taxa de Alfabetização - Floriano x Piauí x Brasil"
+  """Cria e retorna o servidor Flask para o app Dash."""
+  app = Dash(requests_pathname_prefix=url_path)
+  app.title = "Taxa de Alfabetização - Floriano x Piauí x Brasil"
 
-    app.layout = create_layout()
+  app.layout = create_layout()
 
-    return app.server
+  return app.server

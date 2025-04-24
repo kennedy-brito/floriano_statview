@@ -2,7 +2,7 @@ import sidrapy as sd
 import pandas as pd
 import numpy as np
 
-def get_population_total() -> pd.Series:
+def get_population_total(year='last') -> pd.Series:
   """
   Retrieves the total population of Floriano,
   the result is of the latest Census.
@@ -19,7 +19,7 @@ def get_population_total() -> pd.Series:
       categories=9521,
       variable=population,
       ibge_territorial_code=floriano_code,
-      period='last'
+      period=year
       )
 
   total = total.loc[:, ['V','D2N']]
@@ -61,7 +61,7 @@ def get_age_group() -> pd.DataFrame:
   
   return age_group
 
-def get_total_pib()-> pd.Series:
+def get_total_pib(year='last')-> pd.Series:
   """
   Retrieves the total pib of Floriano,
   the result is of the latest Census.
@@ -74,7 +74,7 @@ def get_total_pib()-> pd.Series:
   total='37'
   total_pib = sd.get_table(
           table_code=pib_composition,
-          period='last',
+          period=year,
           territorial_level=city,
           ibge_territorial_code=floriano_code,
           variable=total
@@ -169,7 +169,6 @@ def get_population_by_race() -> pd.DataFrame:
   return distribuition
 
 def get_population_by_local() -> pd.DataFrame:
-  
   """
   Retrieves the local distribution of the population of Floriano,
   the result is of the latest Census.
@@ -203,10 +202,51 @@ def get_population_by_local() -> pd.DataFrame:
 
   return distribuition
 
+def get_pib_per_capita(year='last'):
+  pib = get_total_pib(year)
+
+  city='6'
+  floriano_code='2203909'
+  estimated_population_tb='6579'
+  estimated_population_v='9324'
+
+  estimated_population = sd.get_table(
+      table_code=estimated_population_tb,
+      territorial_level=city,
+      variable=estimated_population_v,
+      ibge_territorial_code=floriano_code,
+      period='last5'
+      )
+
+  estimated_population = estimated_population.loc[:,['V','D2N']]
+  estimated_population.columns = ['estimativa', 'ano']
+  estimated_population = estimated_population.iloc[1:].reset_index(drop=True)
+
+  estimated_population.loc[:,"estimativa"] = pd.to_numeric( estimated_population.loc[:,"estimativa"], errors="coerce").fillna(0).astype(np.int32)
+  estimated_population.loc[:,"ano"] = pd.to_numeric( estimated_population.loc[:,"ano"], errors="coerce").fillna(0).astype(np.int32)
+
+
+  if(pib['ano'] in estimated_population['ano'].values):
+    pop = estimated_population[estimated_population['ano'] == pib['ano']]['estimativa']
+  else:
+    pop = get_population_total(year=pib['ano'])
+
+  pib_per_capita = pib['total']/pop
+
+  """
+  Consegui o pib per capita mas tem um porém,
+  não existem fontes oficiais que informem essa métrica e que possuam API
+  Como eu fiz?
+    Eu pego o pib mais recente e procuro informações da população daquele ano
+    Isso é feito usando a tabela de população oficial e a de população estimada
+      Caso uma não tenha, a busca é feita na outra
+    Com esse resultado eu cálculo o pib per capita
+      Pelas minhas pesquisas o resultado é bem próximo ao de fontes oficiais
+      Meu resultado (2021):     24441.017451
+      De outras fontes (2021):  24441.02
+      Aparentemente basta aproximar
+  """
+  return pib_per_capita
+
 if __name__ == '__main__':
-  get_population_total() 
-  get_age_group() 
-  get_total_pib()
-  get_top_population_city()
-  get_population_by_race() 
-  print(get_population_by_local()) 
+  print(get_pib_per_capita())

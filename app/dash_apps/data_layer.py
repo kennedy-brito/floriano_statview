@@ -298,6 +298,30 @@ def get_pib_per_capita(year='last'):
 
   return pd.Series({'pib_per_capita':pib_per_capita, 'ano': pib['ano']})
 
+def get_literacy_rate(level=6, code='2203909', year='last') -> pd.DataFrame:
+  """Carrega e processa os dados de taxa de alfabetismo de Floriano, do Piauí e do Brasil."""
+  
+  data = sd.get_table(
+    table_code='9543',
+    period=year,
+    territorial_level=level,
+    classification="287",
+    categories="93086,93087,2999,9482,9483,9484,3000",
+    ibge_territorial_code=code,
+    variable='2513')
+  
+  data = data.loc[:, ["MN", "V", "D4N", "D1N", "D2N"]]
+  
+  data.columns = data.iloc[0]
+  
+  data = data.iloc[1:].reset_index(drop=True)
+
+  data.columns = ["medida", "quantidade", "grupo", "local", "ano"]
+  
+  data.loc[:,"quantidade"] = pd.to_numeric( data.loc[:,"quantidade"], errors="coerce").fillna(0).astype(np.float32)
+   
+  return data
+  
 if __name__ == '__main__':
   print("🔍 Testando funções de coleta de dados do SIDRA (Floriano - PI)\n")
 

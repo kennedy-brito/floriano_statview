@@ -125,6 +125,40 @@ def location_distribution(level: str = '6', local_code: str = '2203909', year: s
 
   return graph
 
+def comparison_population_literacy():
+  floriano_dt = data.get_literacy_rate(level= 6,code=2203909)
+    
+  piaui_dt = data.get_literacy_rate(level= 3,code=22)
+  
+  brasil_dt = data.get_literacy_rate(level= 1,code=1)
+  
+  df = pd.concat(
+    [floriano_dt, piaui_dt, brasil_dt],
+    ignore_index=True
+  )
+  
+  fig = px.line(
+    data_frame=df,
+    y="quantidade",
+    x="grupo",
+    color="local",
+    labels={"quantidade": "Taxa de Alfabetização (%)", "grupo": "Faixa Etária", "local": "Localidade"},
+    markers=True,
+    color_discrete_sequence=px.colors.qualitative.Set2,
+  )
+
+  fig.update_layout(
+    xaxis=dict(
+        
+        tickmode='linear',
+        dtick=1
+    ),
+    yaxis=dict(
+        range=[50, 100])
+  )   
+    
+  return fig
+
 def get_metric_total_population(year='last'):
   """
   Obtém a população total de Floriano para o ano especificado.

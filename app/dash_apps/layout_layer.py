@@ -4,27 +4,7 @@ import pandas as pd
 import numpy as np
 import sidrapy as sd
 from . import graph_layer as graph
-
-def card_metric(title: str, value: str, footnote: str = None):
-  return html.Div(
-      className="metric-card card",
-      children=[
-          html.P(title),
-          html.H3(value),
-          html.P(footnote, className='footnote')
-      ]
-  )
-
-
-def card_graph(title: str, graph_id: str, figure):
-  return html.Div(
-      className="graph-card card",
-      children=[
-          html.P(title),
-          dcc.Graph(id=graph_id, figure=figure)
-      ]
-  )
-
+from . import layout_layer_components as comp
 
 def create_layout():
   """Cria o layout do aplicativo Dash."""
@@ -35,22 +15,23 @@ def create_layout():
       html.Main(id='content', children=[
         
         html.Div([
-            card_metric("População Total", graph.get_metric_total_population(), graph.get_metric_total_population_info()),
-            card_metric("PIB de Floriano", graph.get_metric_total_pib(), graph.get_metric_total_pib_info()),
-            card_metric("PIB Per Capita de Floriano", graph.get_metric_pib_per_capita(), graph.get_metric_pib_per_capita_info()),
+            comp.card_metric("População Total", graph.get_metric_total_population(), graph.get_metric_total_population_info()),
+            comp.card_metric("PIB de Floriano", graph.get_metric_total_pib(), graph.get_metric_total_pib_info()),
+            comp.card_metric("PIB Per Capita de Floriano", graph.get_metric_pib_per_capita(), graph.get_metric_pib_per_capita_info()),
           
           ], className='metric-row row'),
         
         html.Div([
-            card_graph("Faixa Etária da Cidade", 'age-pyramid-graph', graph.age_pyramid()),
-            card_graph("Cidades Mais Populosas do Piauí", 'most-populated-cities-graph', graph.most_populated_cities()),
-            card_graph("Distribuição da População por Local", 'location-distribution-graph', graph.location_distribution()),
+            comp.card_graph("Distribuição da População por Local", 'location-distribution-graph', graph.location_distribution()),
+            comp.card_graph_location_interative(),
+            comp.card_graph("Faixa Etária da Cidade", 'age-pyramid-graph', graph.age_pyramid()),
           
           ], className='metric-row row'),
           
         html.Div([
-            card_graph("Distribuição da População por Cor", 'race-distribution-graph', graph.race_distribution()),
-            card_graph("Taxa de Alfabetização - Brasil x Piauí x Floriano", 'comparison-literacy-graph', graph.comparison_population_literacy())
+            comp.card_graph("Cidades Mais Populosas do Piauí", 'most-populated-cities-graph', graph.most_populated_cities()),
+            comp.card_graph("Distribuição da População por Cor", 'race-distribution-graph', graph.race_distribution()),
+            comp.card_graph("Taxa de Alfabetização - Brasil x Piauí x Floriano", 'comparison-literacy-graph', graph.comparison_population_literacy())
           ], className='metric-row row'
         )
       ])

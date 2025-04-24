@@ -4,23 +4,43 @@ import numpy as np
 
 def get_population_total(year='last') -> pd.Series:
   """
-  Retrieves the total population of Floriano,
-  the result is of the latest Census.
-  Return:
-    total: a pandas Series with a 'total_populacao' and a 'ano' row
+  Retorna a população total de Floriano para um ano específico, com base nos dados do SIDRA (IBGE).
+
+  A função consulta a tabela de população por sexo e cor/raça (código 9605), no nível territorial municipal,
+  para o município de Floriano (código 2203909). O resultado é uma série do pandas contendo o ano e a
+  população total estimada ou recenseada, dependendo do período informado.
+
+  Args:
+      year (str or int, optional): O ano desejado no formato 'YYYY' ou 'last' (padrão),
+          que retorna o dado mais recente disponível.
+
+  Returns:
+      pd.Series: Uma série contendo:
+          - 'total_populacao': (int) A população total do município de Floriano.
+          - 'ano': (int) O ano de referência do dado retornado.
+
+  Raises:
+      ValueError: Se a resposta da API estiver vazia ou mal formatada.
+      KeyError: Se as colunas esperadas não estiverem presentes na resposta.
+
+  Example:
+      >>> get_population_total()
+      total_populacao    59236
+      ano                 2022
+      dtype: object
   """
   population_by_gender_and_race = '9605'
   city='6'
   population='93'
   floriano_code='2203909'
   total = sd.get_table(
-      table_code=population_by_gender_and_race,
-      territorial_level=city,
-      categories=9521,
-      variable=population,
-      ibge_territorial_code=floriano_code,
-      period=year
-      )
+    table_code=population_by_gender_and_race,
+    territorial_level=city,
+    categories=9521,
+    variable=population,
+    ibge_territorial_code=floriano_code,
+    period=year
+  )
 
   total = total.loc[:, ['V','D2N']]
   total.columns = ['total_populacao', 'ano']
@@ -31,12 +51,18 @@ def get_population_total(year='last') -> pd.Series:
 
   return total
 
-def get_age_group() -> pd.DataFrame:
+def get_age_group(year='last') -> pd.DataFrame:
   """
-  Retrieves the age group of the population of Floriano,
-  the result is of the latest Census.
-  Return:
-    total: a pandas DataFrame with columns being 'valor', 'ano' and 'grupo_idade'
+  Recupera a distribuição da população de Floriano por grupo de idade com base no último Censo disponível.
+
+  Args:
+      year (str, optional): Ano da consulta. Por padrão, busca o dado mais recente ('last').
+
+  Returns:
+      pd.DataFrame: DataFrame com as colunas:
+          - 'valor' (int): Quantidade de pessoas em cada grupo etário.
+          - 'ano' (int): Ano de referência.
+          - 'grupo_idade' (str): Descrição do grupo de idade.
   """
   population_age_group = '9606'
   city='6'
@@ -46,11 +72,11 @@ def get_age_group() -> pd.DataFrame:
   age_group = sd.get_table(
       table_code=population_age_group,
       territorial_level=city,
-      classification="287",
+      classification=age,
       categories="93070,93084,93085,93086,93087,93088,93089,93090,93091,93092,93093,93094,93095,93096,93097,93098,49108,49109,60040,60041,6653",
       variable=population,
       ibge_territorial_code=floriano_code,
-      period='last'
+      period=year
       )
 
   age_group = age_group.loc[:,['V','D2N','D4N']]
@@ -63,10 +89,15 @@ def get_age_group() -> pd.DataFrame:
 
 def get_total_pib(year='last')-> pd.Series:
   """
-  Retrieves the total pib of Floriano,
-  the result is of the latest Census.
-  Return:
-    total_pib: a pandas Series with a 'total' and a 'ano' row
+  Recupera o valor total do PIB (Produto Interno Bruto) de Floriano no ano especificado.
+
+  Args:
+      year (str, optional): Ano da consulta. Por padrão, busca o dado mais recente ('last').
+
+  Returns:
+      pd.Series: Série com as seguintes chaves:
+          - 'total' (int): Valor total do PIB em reais (convertido de milhares).
+          - 'ano' (int): Ano de referência.
   """
   pib_composition='5938'
   city='6'
@@ -90,13 +121,13 @@ def get_total_pib(year='last')-> pd.Series:
   
 def get_top_population_city()-> pd.DataFrame:
   """
-  Retrieves the most populated cities of Piauí,
-  the result is of the latest Census.
-  Return:
-    total: a pandas DataFrame with columns being
-      'populacao'
-      'municipio'
-      'ano'
+  Recupera os 10 municípios mais populosos do estado do Piauí com base no último Censo disponível.
+
+  Returns:
+      pd.DataFrame: DataFrame com as colunas:
+          - 'populacao' (int): Quantidade de habitantes.
+          - 'municipio' (str): Nome do município.
+          - 'ano' (int): Ano de referência.
   """
   with open('app/dash_apps/piaui_city_codes.txt', 'r') as file:
     city_codes = file.readline()
@@ -134,26 +165,31 @@ def get_top_population_city()-> pd.DataFrame:
 
   return top_population
 
-def get_population_by_race() -> pd.DataFrame:
+def get_population_by_race(level='6', local_code='2203909') -> pd.DataFrame:
   """
-  Retrieves the race distribution of the population of Floriano,
-  the result is of the latest Census.
-  Return:
-    distribuition: a pandas DataFrame with columns being 'porcentagem', 'ano' and 'raca'
+  Recupera a distribuição percentual da população de Floriano por raça, com base no último Censo.
+
+  Args:
+      level (str, optional): Nível territorial da consulta (padrão: '6' para município).
+      local_code (str, optional): Código IBGE do município (padrão: '2203909' para Floriano).
+
+  Returns:
+      pd.DataFrame: DataFrame com as colunas:
+          - 'porcentagem' (float): Percentual da população por raça.
+          - 'ano' (int): Ano de referência.
+          - 'raca' (str): Descrição da raça.
   """
   population_by_race = '9605'
-  city='6'
   race='86'
-  floriano_code='2203909'
   population_perc = '1000093'
   distribuition = sd.get_table(
       table_code=population_by_race,
-      territorial_level=city,
+      territorial_level=level,
       classification=race,
       # Branca, Preta, Amarela, Parda, Indígena
       categories='2776,2777,2778,2779,2780', 
       variable=population_perc,
-      ibge_territorial_code=floriano_code,
+      ibge_territorial_code=local_code,
       period='last'
       )
 
@@ -168,26 +204,32 @@ def get_population_by_race() -> pd.DataFrame:
 
   return distribuition
 
-def get_population_by_local() -> pd.DataFrame:
+def get_population_by_local(level='6', local_code='2203909', year='last') -> pd.DataFrame:
   """
-  Retrieves the local distribution of the population of Floriano,
-  the result is of the latest Census.
-  Return:
-    distribuition: a pandas DataFrame with columns being 'porcentagem', 'ano' and 'local'
+  Recupera a distribuição percentual da população de Floriano entre áreas urbanas e rurais, com base no último Censo.
+
+  Args:
+    level (str, optional): Nível territorial da consulta (padrão: '6' para município).
+    local_code (str, optional): Código IBGE do município (padrão: '2203909' para Floriano).
+    year (str, optional): Ano da consulta. Por padrão, busca o dado mais recente ('last').
+
+  Returns:
+    pd.DataFrame: DataFrame com as colunas:
+      - 'porcentagem' (float): Percentual da população por localidade.
+      - 'ano' (int): Ano de referência.
+      - 'local' (str): Tipo de localidade ('Urbana' ou 'Rural').
   """
   population_by_local = '9923'
-  city='6'
   local='1'
-  floriano_code='2203909'
   population_perc = '1000093'
   distribuition = sd.get_table(
       table_code=population_by_local,
-      territorial_level=city,
+      territorial_level=level,
       classification=local,
       categories='1,2', # Urbana, Rural
       variable=population_perc,
-      ibge_territorial_code=floriano_code,
-      period='last'
+      ibge_territorial_code=local_code,
+      period=year
       )
 
 
@@ -203,6 +245,26 @@ def get_population_by_local() -> pd.DataFrame:
   return distribuition
 
 def get_pib_per_capita(year='last'):
+  """
+  Calcula o PIB per capita de Floriano com base no PIB total e na população estimada do ano correspondente.
+
+  O cálculo é feito utilizando a seguinte lógica:
+    - Busca o PIB mais recente disponível.
+    - Tenta obter a população estimada para o mesmo ano.
+    - Caso não esteja disponível, busca a população oficial daquele ano.
+    - Divide o valor total do PIB pelo número de habitantes.
+
+  Nota:
+    Embora o dado não esteja disponível diretamente por API em fontes oficiais, o valor calculado se aproxima bastante de dados publicados.
+    Resultado calculado (2021): 24441.017451
+    Resultado de outras fontes (2021): 24441.02
+
+  Args:
+      year (str, optional): Ano da consulta. Por padrão, busca o dado mais recente ('last').
+
+  Returns:
+      float: Valor estimado do PIB per capita em reais.
+  """
   pib = get_total_pib(year)
 
   city='6'
@@ -247,6 +309,3 @@ def get_pib_per_capita(year='last'):
       Aparentemente basta aproximar
   """
   return pib_per_capita
-
-if __name__ == '__main__':
-  print(get_pib_per_capita())

@@ -309,3 +309,41 @@ def get_pib_per_capita(year='last'):
       Aparentemente basta aproximar
   """
   return pib_per_capita
+
+if __name__ == '__main__':
+  print("🔍 Testando funções de coleta de dados do SIDRA (Floriano - PI)\n")
+
+  try:
+    print("✅ População Total:")
+    total_pop = get_population_total()
+    print(total_pop, end="\n\n")
+
+    print("✅ População por Faixa Etária:")
+    age_group = get_age_group()
+    print(age_group.head(), end="\n\n")
+
+    print("✅ PIB Total:")
+    pib_total = get_total_pib()
+    print(pib_total, end="\n\n")
+
+    print("✅ Cidades mais Populosas do Piauí:")
+    top_pop = get_top_population_city()
+    print(top_pop, end="\n\n")
+
+    print("✅ População por Raça:")
+    race_dist = get_population_by_race()
+    print(race_dist, end="\n\n")
+
+    print("✅ População por Local (Urbano/Rural):")
+    local_dist = get_population_by_local()
+    print(local_dist, end="\n\n")
+
+    print("✅ PIB per capita:")
+    pib_pc = get_pib_per_capita()
+    print(pib_pc, end="\n\n")
+
+    print("🚀 Todos os testes foram executados com sucesso!")
+
+  except Exception as e:
+    print("❌ Erro durante a execução das funções:")
+    print(repr(e))

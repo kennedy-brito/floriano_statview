@@ -178,3 +178,33 @@ def get_metric_total_pib_info(year='last'):
     str: Texto com o ano do censo usado para o PIB.
   """
   return f"Censo: {data.get_total_pib(year)['ano']}"
+
+def get_metric_pib_per_capita(year='last', format: bool = True):
+  """
+  Obtém o PIB per capita de Floriano formatado em reais.
+
+  Args:
+    year (str): Ano da consulta (padrão 'last').
+    format (bool): Se o valor deve ser formatado com notação de milhar/milhão/bilhão
+
+  Returns:
+    str: PIB formatado.
+  """
+  value = data.get_pib_per_capita(year)['total']
+  if format:
+    moeda = format_pib(value)
+  else: 
+    moeda = f"R$ {value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+  return moeda
+
+def get_metric_pib_per_capita_info(year='last'):
+  """
+  Retorna o ano de referência do PIB consultado.
+
+  Args:
+    year (str): Ano da consulta (padrão 'last').
+
+  Returns:
+    str: Texto com o ano do censo usado para o PIB.
+  """
+  return f"Censo: {data.get_pib_per_capita(year)['ano']}"

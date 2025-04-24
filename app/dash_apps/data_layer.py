@@ -260,10 +260,11 @@ def get_pib_per_capita(year='last'):
     Resultado de outras fontes (2021): 24441.02
 
   Args:
-      year (str, optional): Ano da consulta. Por padrão, busca o dado mais recente ('last').
+    year (str, optional): Ano da consulta. Por padrão, busca o dado mais recente ('last').
 
-  Returns:
-      float: Valor estimado do PIB per capita em reais.
+  pd.Series: Uma série contendo:
+    - 'total_populacao': (float) O PIB Per Capita de Floriano
+    - 'ano': (int) O ano de referência do dado retornado.
   """
   pib = get_total_pib(year)
 
@@ -295,20 +296,7 @@ def get_pib_per_capita(year='last'):
 
   pib_per_capita = pib['total']/pop
 
-  """
-  Consegui o pib per capita mas tem um porém,
-  não existem fontes oficiais que informem essa métrica e que possuam API
-  Como eu fiz?
-    Eu pego o pib mais recente e procuro informações da população daquele ano
-    Isso é feito usando a tabela de população oficial e a de população estimada
-      Caso uma não tenha, a busca é feita na outra
-    Com esse resultado eu cálculo o pib per capita
-      Pelas minhas pesquisas o resultado é bem próximo ao de fontes oficiais
-      Meu resultado (2021):     24441.017451
-      De outras fontes (2021):  24441.02
-      Aparentemente basta aproximar
-  """
-  return pib_per_capita
+  return pd.Series({'pib_per_capita':pib_per_capita, 'ano': pib['ano']})
 
 if __name__ == '__main__':
   print("🔍 Testando funções de coleta de dados do SIDRA (Floriano - PI)\n")

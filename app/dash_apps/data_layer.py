@@ -263,7 +263,7 @@ def get_pib_per_capita(year='last'):
     year (str, optional): Ano da consulta. Por padrão, busca o dado mais recente ('last').
 
   pd.Series: Uma série contendo:
-    - 'total_populacao': (float) O PIB Per Capita de Floriano
+    - 'pib_per_capita': (float) O PIB Per Capita de Floriano
     - 'ano': (int) O ano de referência do dado retornado.
   """
   pib = get_total_pib(year)

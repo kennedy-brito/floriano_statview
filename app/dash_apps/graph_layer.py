@@ -190,7 +190,7 @@ def get_metric_pib_per_capita(year='last', format: bool = True):
   Returns:
     str: PIB formatado.
   """
-  value = data.get_pib_per_capita(year)['total']
+  value = data.get_pib_per_capita(year)['pib_per_capita'].item()
   if format:
     moeda = format_pib(value)
   else: 

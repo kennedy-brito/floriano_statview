@@ -37,6 +37,7 @@ def create_layout():
         html.Div([
             card_metric("População Total", graph.get_metric_total_population(), graph.get_metric_total_population_info()),
             card_metric("PIB de Floriano", graph.get_metric_total_pib(), graph.get_metric_total_pib_info()),
+            card_metric("PIB Per Capita de Floriano", graph.get_metric_pib_per_capita(), graph.get_metric_pib_per_capita_info()),
           
           ], className='metric-row'),
         

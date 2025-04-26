@@ -43,8 +43,27 @@ def card_graph_location_interative():
     return html.Div(
         className="graph-card card",
         children=[
-            html.P("Distribuição por Zona ", id="location-comparison-title"),
+            html.P("Distribuição da População por Zona", id="location-comparison-title"),
             dcc.Dropdown(list(code_level_options.keys()), 'Piauí', id='local-code-filter'),
             dcc.Graph(id="location-comparison-graph")
+        ]
+    )
+    
+
+@callback(
+    Output('race-comparison-graph', 'figure'),
+    Input('race-code-filter', 'value'),
+)
+def update_race_interative(location_key):
+    location= code_level_options[location_key]
+    return graph.race_distribution(level=location['level'], local_code=location['code'])
+
+def card_graph_race_interative():
+    return html.Div(
+        className="graph-card card",
+        children=[
+            html.P("Distribuição da População por Raça", id="race-comparison-title"),
+            dcc.Dropdown(list(code_level_options.keys()), 'Piauí', id='race-code-filter'),
+            dcc.Graph(id="race-comparison-graph")
         ]
     )

@@ -22,15 +22,20 @@ def create_layout():
           ], className='metric-row row'),
         
         html.Div([
-            comp.card_graph("Distribuição da População por Local", 'location-distribution-graph', graph.location_distribution()),
+            comp.card_graph("Distribuição da População por Zona - Floriano", 'location-distribution-graph', graph.location_distribution()),
             comp.card_graph_location_interative(),
             comp.card_graph("Faixa Etária da Cidade", 'age-pyramid-graph', graph.age_pyramid()),
           
           ], className='metric-row row'),
           
         html.Div([
+            comp.card_graph("Distribuição da População por Raça - Floriano", 'race-distribution-graph', graph.race_distribution()),
+            comp.card_graph_race_interative(),
             comp.card_graph("Cidades Mais Populosas do Piauí", 'most-populated-cities-graph', graph.most_populated_cities()),
-            comp.card_graph("Distribuição da População por Cor", 'race-distribution-graph', graph.race_distribution()),
+          ], className='metric-row row'
+        ),
+        
+        html.Div([
             comp.card_graph("Taxa de Alfabetização - Brasil x Piauí x Floriano", 'comparison-literacy-graph', graph.comparison_population_literacy())
           ], className='metric-row row'
         )

@@ -125,6 +125,25 @@ def location_distribution(level: str = '6', local_code: str = '2203909', year: s
 
   return graph
 
+def literacy_table(level: str = '6', local_code: str = '2203909', year: str = 'last')->Figure:
+  df = data.get_literacy_rate(level, local_code, year)
+  values = []
+  
+  for value in df['quantidade']:
+    values.append(f"{value:.2f}")
+    
+  graph = go.Figure(data=[go.Table(
+    header=dict(values=["Faixa Etária", "Taxa de Alfabetização (%)"],
+                fill_color='paleturquoise',
+                align='left'),
+    cells=dict(values=[df['grupo'], values ],
+               fill_color='lavender',
+               align='left'))
+])
+
+  return graph
+
+
 def comparison_population_literacy():
   """
   Compara graficamente a taxa de alfabetização por faixa etária entre Floriano (PI), o estado do Piauí e o Brasil.

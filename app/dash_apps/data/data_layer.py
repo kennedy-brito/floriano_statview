@@ -51,7 +51,7 @@ def get_population_total(year='last') -> pd.Series:
 
   return total
 
-def get_age_group(year='last') -> pd.DataFrame:
+def get_population_age_group(year='last') -> pd.DataFrame:
   """
   Recupera a distribuição da população de Floriano por grupo de idade com base no último Censo disponível.
 
@@ -119,7 +119,7 @@ def get_total_pib(year='last')-> pd.Series:
   
   return total_pib
   
-def get_top_population_city()-> pd.DataFrame:
+def get_top_population_cities()-> pd.DataFrame:
   """
   Recupera os 10 municípios mais populosos do estado do Piauí com base no último Censo disponível.
 
@@ -353,7 +353,7 @@ if __name__ == '__main__':
     print(total_pop, end="\n\n")
 
     print("✅ População por Faixa Etária:")
-    age_group = get_age_group()
+    age_group = get_population_age_group()
     print(age_group.head(), end="\n\n")
 
     print("✅ PIB Total:")
@@ -361,7 +361,7 @@ if __name__ == '__main__':
     print(pib_total, end="\n\n")
 
     print("✅ Cidades mais Populosas do Piauí:")
-    top_pop = get_top_population_city()
+    top_pop = get_top_population_cities()
     print(top_pop, end="\n\n")
 
     print("✅ População por Raça:")

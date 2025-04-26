@@ -5,7 +5,7 @@ from plotly.graph_objs import Figure
 from app.dash_apps.data import data_layer as data
 import plotly.graph_objects as go
 
-def format_pib(value) -> str:
+def format_pib_value(value) -> str:
   """
   Formata um valor numérico em reais com notação apropriada
   para bilhões, milhões ou unidades simples.
@@ -23,7 +23,7 @@ def format_pib(value) -> str:
   else:
     return f"R$ {value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
-def age_pyramid(year='last')->Figure:
+def create_age_pyramid(year='last')->Figure:
   """
   Gera um gráfico de pirâmide etária para Floriano baseado no ano informado.
 
@@ -34,7 +34,7 @@ def age_pyramid(year='last')->Figure:
     plotly.graph_objs.Figure: Gráfico de barras horizontais com idade versus população.
   """
   graph = px.bar(
-    data_frame=data.get_age_group(year),
+    data_frame=data.get_population_age_group(year),
     x='valor',
     y='grupo_idade',
     orientation='h',
@@ -48,7 +48,7 @@ def age_pyramid(year='last')->Figure:
 
   return graph
 
-def most_populated_cities()->Figure:
+def create_most_populated_cities()->Figure:
   """
   Gera um gráfico de barras horizontais com as 10 cidades mais populosas do Piauí.
   Destaca Floriano com uma cor diferente.
@@ -56,7 +56,7 @@ def most_populated_cities()->Figure:
   Returns:
     plotly.graph_objs.Figure: Gráfico com população por município.
   """
-  df = data.get_top_population_city()
+  df = data.get_top_population_cities()
   
   floriano_idx = df[df['municipio'] == "Floriano"].index[0]
   colors = ['#636EFA'] * len(df) #standard blue of plotly
@@ -84,7 +84,7 @@ def most_populated_cities()->Figure:
   
   return fig
 
-def race_distribution(level: str = '6', local_code: str = '2203909')->Figure:
+def create_race_distribution(level: str = '6', local_code: str = '2203909')->Figure:
   """
   Gera um gráfico de pizza com a distribuição racial da população de Floriano.
 
@@ -104,7 +104,7 @@ def race_distribution(level: str = '6', local_code: str = '2203909')->Figure:
 
   return graph
 
-def location_distribution(level: str = '6', local_code: str = '2203909', year: str = 'last')->Figure:
+def create_location_distribution(level: str = '6', local_code: str = '2203909', year: str = 'last')->Figure:
   """
   Gera um gráfico de pizza com a distribuição da população entre zonas urbanas e rurais.
 
@@ -125,7 +125,7 @@ def location_distribution(level: str = '6', local_code: str = '2203909', year: s
 
   return graph
 
-def literacy_table(level: str = '6', local_code: str = '2203909', year: str = 'last')->Figure:
+def create_literacy_table(level: str = '6', local_code: str = '2203909', year: str = 'last')->Figure:
   df = data.get_literacy_rate(level, local_code, year)
   values = []
   
@@ -144,7 +144,7 @@ def literacy_table(level: str = '6', local_code: str = '2203909', year: str = 'l
   return graph
 
 
-def comparison_population_literacy():
+def create_comparison_literacy():
   """
   Compara graficamente a taxa de alfabetização por faixa etária entre Floriano (PI), o estado do Piauí e o Brasil.
 
@@ -230,7 +230,7 @@ def get_metric_total_pib(year='last', format: bool = True):
   """
   value = data.get_total_pib(year)['total']
   if format:
-    moeda = format_pib(value)
+    moeda = format_pib_value(value)
   else: 
     moeda = f"R$ {value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
   return moeda
@@ -260,7 +260,7 @@ def get_metric_pib_per_capita(year='last', format: bool = True):
   """
   value = data.get_pib_per_capita(year)['pib_per_capita'].item()
   if format:
-    moeda = format_pib(value)
+    moeda = format_pib_value(value)
   else: 
     moeda = f"R$ {value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
   return moeda

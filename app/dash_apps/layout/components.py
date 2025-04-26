@@ -1,9 +1,5 @@
 
-from dash import Dash, html, dcc, callback, Output, Input
-import plotly.express as px
-import pandas as pd
-import numpy as np
-import sidrapy as sd
+from dash import html, dcc, callback, Output, Input
 from app.dash_apps.graphs import graph_layer as graph
 
 code_level_options = {
@@ -11,18 +7,20 @@ code_level_options = {
     'São Paulo - SP': {'level': 6, 'code': '3550308'}
 }
 
-def card_metric(title: str, value: str, footnote: str = None):
+def create_metric_card(title: str, value: str, footnote: str = None) -> html.Div:
+  """Retorna um card de métrica simples."""
   return html.Div(
       className="metric-card card",
       children=[
           html.P(title),
           html.H3(value),
-          html.P(footnote, className='footnote')
+          html.P(footnote, className='footnote') if footnote else None
       ]
   )
 
 
-def card_graph(title: str, graph_id: str, figure):
+def create_graph_card(title: str, graph_id: str, figure) -> html.Div:
+  """Retorna um card contendo um gráfico."""
   return html.Div(
       className="graph-card card",
       children=[
@@ -35,16 +33,22 @@ def card_graph(title: str, graph_id: str, figure):
     Output('location-comparison-graph', 'figure'),
     Input('local-code-filter', 'value'),
 )
-def update_location_interative(location_key):
+def update_location_interactive(location_key)-> dict:
+    """Atualiza o gráfico de distribuição urbana/rural baseado na localização selecionada."""
     location= code_level_options[location_key]
-    return graph.location_distribution(level=location['level'], local_code=location['code'])
+    return graph.create_location_distribution(level=location['level'], local_code=location['code'])
   
-def card_graph_location_interative():
+def create_location_graph_card()-> html.Div:
+    """Retorna o card de comparação de zona urbana/rural com dropdown interativo."""
     return html.Div(
         className="graph-card card",
         children=[
             html.P("Distribuição da População por Zona Urbana/Rural - Outros Locais", id="location-comparison-title"),
-            dcc.Dropdown(list(code_level_options.keys()), 'Piauí', id='local-code-filter'),
+            dcc.Dropdown(
+                list(code_level_options.keys()), 
+                'Piauí', 
+                id='local-code-filter',
+                className="dropdown"),
             dcc.Graph(id="location-comparison-graph")
         ]
     )
@@ -54,11 +58,13 @@ def card_graph_location_interative():
     Output('race-comparison-graph', 'figure'),
     Input('race-code-filter', 'value'),
 )
-def update_race_interative(location_key):
+def update_race_interactive(location_key):
+    """Atualiza o gráfico de distribuição racial baseado na localização selecionada."""
     location= code_level_options[location_key]
-    return graph.race_distribution(level=location['level'], local_code=location['code'])
+    return graph.create_race_distribution(level=location['level'], local_code=location['code'])
 
-def card_graph_race_interative():
+def create_race_graph_card()-> html.Div:
+    """Retorna o card de comparação de raça com dropdown interativo."""
     return html.Div(
         className="graph-card card",
         children=[
@@ -68,7 +74,8 @@ def card_graph_race_interative():
         ]
     )
 
-def card_with_tabs_literacy():
+def create_literacy_tabs_card()-> html.Div:
+    """Retorna o card com abas para visualização da taxa de alfabetização."""
     return html.Div(
         children=[
             html.P("Taxa de Alfabetização"),
@@ -82,7 +89,7 @@ def card_with_tabs_literacy():
                         children=[
                             dcc.Graph(
                                 id="literacy-table", 
-                                figure=graph.literacy_table()
+                                figure=graph.create_literacy_table()
                                 )
                             ],
                         ),
@@ -92,7 +99,7 @@ def card_with_tabs_literacy():
                         children=[
                             dcc.Graph(
                                 id="comparison-literacy",
-                                figure=graph.comparison_population_literacy()
+                                figure=graph.create_comparison_literacy()
                                 )
                             ],
                         ),

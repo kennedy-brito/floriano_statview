@@ -43,7 +43,7 @@ def card_graph_location_interative():
     return html.Div(
         className="graph-card card",
         children=[
-            html.P("Distribuição da População por Zona", id="location-comparison-title"),
+            html.P("Distribuição da População por Zona Urbana/Rural - Outros Locais", id="location-comparison-title"),
             dcc.Dropdown(list(code_level_options.keys()), 'Piauí', id='local-code-filter'),
             dcc.Graph(id="location-comparison-graph")
         ]

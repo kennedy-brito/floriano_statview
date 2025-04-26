@@ -36,7 +36,7 @@ def create_layout():
         ),
         
         html.Div([
-            comp.card_graph("Taxa de Alfabetização - Brasil x Piauí x Floriano", 'comparison-literacy-graph', graph.comparison_population_literacy())
+            comp.card_with_tabs_literacy()
           ], className='metric-row row'
         )
       ])

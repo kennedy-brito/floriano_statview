@@ -67,3 +67,37 @@ def card_graph_race_interative():
             dcc.Graph(id="race-comparison-graph")
         ]
     )
+
+def card_with_tabs_literacy():
+    return html.Div(
+        children=[
+            html.P("Taxa de Alfabetização"),
+            dcc.Tabs(
+                id="tabs",
+                value="tab-1",
+                children=[
+                    dcc.Tab(
+                        label="Floriano",
+                        value="tab-1",
+                        children=[
+                            dcc.Graph(
+                                id="literacy-table", 
+                                figure=graph.literacy_table()
+                                )
+                            ],
+                        ),
+                    dcc.Tab(
+                        label="Floriano x Piauí x Brasil",
+                        value="tab-2",
+                        children=[
+                            dcc.Graph(
+                                id="comparison-literacy",
+                                figure=graph.comparison_population_literacy()
+                                )
+                            ],
+                        ),
+                    ],
+                )
+            ],
+        className="graph-card card",
+        )

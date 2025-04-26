@@ -129,7 +129,7 @@ def get_top_population_city()-> pd.DataFrame:
           - 'municipio' (str): Nome do município.
           - 'ano' (int): Ano de referência.
   """
-  with open('app/dash_apps/piaui_city_codes.txt', 'r') as file:
+  with open('app/dash_apps/data/piaui_city_codes.txt', 'r') as file:
     city_codes = file.readline()
   
   population_of_cities = '9605'

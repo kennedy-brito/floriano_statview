@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 from plotly.graph_objs import Figure
-from . import data_layer as data
+from app.dash_apps.data import data_layer as data
 import plotly.graph_objects as go
 
 def format_pib(value) -> str:

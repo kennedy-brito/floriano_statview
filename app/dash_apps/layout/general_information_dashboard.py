@@ -3,8 +3,8 @@ import plotly.express as px
 import pandas as pd
 import numpy as np
 import sidrapy as sd
-from . import graph_layer as graph
-from . import layout_layer_components as comp
+from app.dash_apps.graphs import graph_layer as graph
+from . import components as comp
 
 def create_layout():
   """Cria o layout do aplicativo Dash."""

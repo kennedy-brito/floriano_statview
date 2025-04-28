@@ -165,6 +165,7 @@ def create_literacy_tabs_card()-> html.Div:
                         ),
                     ],
                 )
+            ,html.P(graph.get_literacy_rate_info() ,id="literacy-rate-footnote", className='footnote')
             ],
         className="graph-card card",
         )

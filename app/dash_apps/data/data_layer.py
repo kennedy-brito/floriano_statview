@@ -430,5 +430,7 @@ def get_literacy_rate(level=6, code='2203909', year='last') -> pd.DataFrame:
   literacy_rate.columns = ["medida", "quantidade", "grupo", "local", "ano"]
   
   literacy_rate.loc[:,"quantidade"] = pd.to_numeric( literacy_rate.loc[:,"quantidade"], errors="coerce").fillna(0).astype(np.float32)
-   
+  
+  literacy_rate['footnote'] = 'Dado disponível somente no ano de 2022'
+  
   return literacy_rate

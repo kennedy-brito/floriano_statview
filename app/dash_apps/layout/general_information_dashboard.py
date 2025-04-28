@@ -35,7 +35,7 @@ def create_layout():
         ),
         
         html.Div([
-            # comp.create_literacy_tabs_card()
+            comp.create_literacy_tabs_card()
           ], className='metric-row row'
         )
       ])

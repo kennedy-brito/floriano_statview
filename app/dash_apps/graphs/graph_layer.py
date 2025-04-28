@@ -180,7 +180,7 @@ def create_literacy_table(level: str = '6', local_code: str = '2203909', year: s
   return graph
 
 
-def create_comparison_literacy():
+def create_comparison_literacy(year='last'):
   """
   Compara graficamente a taxa de alfabetização por faixa etária entre Floriano (PI), o estado do Piauí e o Brasil.
 
@@ -196,11 +196,11 @@ def create_comparison_literacy():
   Returns:
       plotly.graph_objs._figure.Figure: Objeto de figura contendo o gráfico de linha com os dados de alfabetização.
   """
-  floriano_dt = data.get_literacy_rate(level= 6,code=2203909)
+  floriano_dt = data.get_literacy_rate(level= 6,code=2203909, year=year)
     
-  piaui_dt = data.get_literacy_rate(level= 3,code=22)
+  piaui_dt = data.get_literacy_rate(level= 3,code=22, year=year)
   
-  brasil_dt = data.get_literacy_rate(level= 1,code=1)
+  brasil_dt = data.get_literacy_rate(level= 1,code=1, year=year)
   
   df = pd.concat(
     [floriano_dt, piaui_dt, brasil_dt],
@@ -228,6 +228,10 @@ def create_comparison_literacy():
   )   
     
   return fig
+
+def get_literacy_rate_info(year='last'):
+  floriano_dt = data.get_literacy_rate(level= 6,code=2203909, year=year)
+  return floriano_dt.iloc[0]['footnote']
 
 def get_metric_total_population(year='last'):
   """

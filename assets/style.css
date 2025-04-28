@@ -120,8 +120,8 @@ p.footnote {
 }
 
 .year-select-card{
-  margin-bottom: 10px;
-  width: 33%;
+  margin: 0px 15px 10px 4px;
+  max-width: 100%;
 }
 /* =======================
    Responsividade

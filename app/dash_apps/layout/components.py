@@ -30,12 +30,19 @@ outputs_mapping_infos = {
 }
 
 def get_year_select_card():
-    return dcc.Dropdown(
-        list(years), 
-        'Mais Recente', 
-        id='year-filter',
-        className="dropdown"
+    return html.Div(
+        children=[
+            html.P("Selecione o ano dos dados:"),
+            dcc.Dropdown(
+                list(years), 
+                'Mais Recente', 
+                id='year-filter',
+                className="dropdown"
+            ),
+            html.P("Algumas informações podem não estar disponíveis para todos os anos.", className='footnote')
+        ], className='year-select-card card'
     )
+
 
 def create_metric_card(title: str, value_id, footnote_id) -> html.Div:
   """Retorna um card de métrica simples."""

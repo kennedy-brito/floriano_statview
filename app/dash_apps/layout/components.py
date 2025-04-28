@@ -11,12 +11,14 @@ years = ['Mais Recente'] + [str(i) for i in range(2010,2026)]
 
 outputs_mapping_graphs = {
     "total_population_metric": graph.get_metric_total_population,
-    "total_pib_metric": graph.get_metric_total_pib
+    "total_pib_metric": graph.get_metric_total_pib,
+    "pib_per_capita_metric": graph.get_metric_pib_per_capita
 }
 
 outputs_mapping_infos = {
     "total_population_footnote": graph.get_metric_total_population_info,
-    "total_pib_footnote": graph.get_metric_total_pib_info
+    "total_pib_footnote": graph.get_metric_total_pib_info,
+    "pib_per_capita_footnote": graph.get_metric_pib_per_capita_info
 }
 
 def get_year_select_card():

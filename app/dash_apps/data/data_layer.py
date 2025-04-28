@@ -2,8 +2,6 @@ import sidrapy as sd
 import pandas as pd
 import numpy as np
 
-
-
 def verify_closest_year(year, available_years: list):
     if year not in available_years:
       years= available_years[1:] if 'last' in available_years else available_years
@@ -170,7 +168,7 @@ def get_total_pib(year='last')-> pd.Series:
   total_pib = total_pib.loc[:,['V','D2N']] 
   total_pib.columns = ['total', 'ano']
   total_pib = total_pib.iloc[1]
-  total_pib['total'] = int(total_pib['total'])*1000
+  total_pib['total'] = float(total_pib['total'])*1000
   total_pib['ano'] = int(total_pib['ano']) 
   
   total_pib['footnote'] = f'Censo do ano de {total_pib['ano']}'
@@ -324,37 +322,25 @@ def get_pib_per_capita(year='last'):
     - 'pib_per_capita': (float) O PIB Per Capita de Floriano
     - 'ano': (int) O ano de referência do dado retornado.
   """
+  total_population_years = ['last'] + [str(year) for year in range(2010, 2025)]
+  total_population_years.remove('2023')
+  
   pib = get_total_pib(year)
 
-  city='6'
-  floriano_code='2203909'
-  estimated_population_tb='6579'
-  estimated_population_v='9324'
+  if pib['ano'] not in total_population_years:
+    year = verify_closest_year(pib['ano'], total_population_years)
+    pib = get_total_pib(year)
+  
+  pop = get_population_total(year=pib['ano'])
 
-  estimated_population = sd.get_table(
-      table_code=estimated_population_tb,
-      territorial_level=city,
-      variable=estimated_population_v,
-      ibge_territorial_code=floriano_code,
-      period='last5'
-      )
-
-  estimated_population = estimated_population.loc[:,['V','D2N']]
-  estimated_population.columns = ['estimativa', 'ano']
-  estimated_population = estimated_population.iloc[1:].reset_index(drop=True)
-
-  estimated_population.loc[:,"estimativa"] = pd.to_numeric( estimated_population.loc[:,"estimativa"], errors="coerce").fillna(0).astype(np.int32)
-  estimated_population.loc[:,"ano"] = pd.to_numeric( estimated_population.loc[:,"ano"], errors="coerce").fillna(0).astype(np.int32)
-
-
-  if(pib['ano'] in estimated_population['ano'].values):
-    pop = estimated_population[estimated_population['ano'] == pib['ano']]['estimativa']
-  else:
-    pop = get_population_total(year=pib['ano'])
-
-  pib_per_capita = pib['total']/pop
-
-  return pd.Series({'pib_per_capita':pib_per_capita, 'ano': pib['ano']})
+  pib_per_capita = pib['total']/pop['total_populacao']
+  
+  return pd.Series(
+    {
+      'pib_per_capita':pib_per_capita, 
+      'ano': pib['ano'], 
+      'footnote': f'Calculado usando dados do ano de {pib['ano']}'
+    })
 
 def get_literacy_rate(level=6, code='2203909', year='last') -> pd.DataFrame:
   """

@@ -258,7 +258,7 @@ def get_metric_pib_per_capita(year='last', format: bool = True):
   Returns:
     str: PIB formatado.
   """
-  value = data.get_pib_per_capita(year)['pib_per_capita'].item()
+  value = data.get_pib_per_capita(year)['pib_per_capita']
   if format:
     moeda = format_pib_value(value)
   else: 
@@ -275,4 +275,4 @@ def get_metric_pib_per_capita_info(year='last'):
   Returns:
     str: Texto com o ano do censo usado para o PIB.
   """
-  return f"Censo: {data.get_pib_per_capita(year)['ano']}"
+  return data.get_pib_per_capita(year)['footnote']

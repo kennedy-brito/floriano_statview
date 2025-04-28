@@ -13,14 +13,16 @@ outputs_mapping_graphs = {
     "total_population_metric": graph.get_metric_total_population,
     "total_pib_metric": graph.get_metric_total_pib,
     "pib_per_capita_metric": graph.get_metric_pib_per_capita,
-    'location-distribution-graph': graph.create_location_distribution
+    'location-distribution-graph': graph.create_location_distribution,
+    'age-pyramid-graph': graph.create_age_pyramid
 }
 
 outputs_mapping_infos = {
     "total_population_footnote": graph.get_metric_total_population_info,
     "total_pib_footnote": graph.get_metric_total_pib_info,
     "pib_per_capita_footnote": graph.get_metric_pib_per_capita_info,
-    'location-distribution-footnote': graph.get_location_distribution_info
+    'location-distribution-footnote': graph.get_location_distribution_info,
+    'age-pyramid-footnote': graph.get_age_pyramid_info
 }
 
 def get_year_select_card():

@@ -116,6 +116,9 @@ def get_population_age_group(year='last') -> pd.DataFrame:
           - 'ano' (int): Ano de referência.
           - 'grupo_idade' (str): Descrição do grupo de idade.
   """
+  age_group_years = ['last', '2010', '2022']
+  year = verify_closest_year(year, age_group_years)
+  
   population_age_group = '9606'
   city='6'
   population='93'
@@ -136,6 +139,8 @@ def get_population_age_group(year='last') -> pd.DataFrame:
   age_group = age_group.iloc[1:].reset_index(drop=True)
 
   age_group.loc[:,"valor"] = pd.to_numeric( age_group.loc[:,"valor"], errors="coerce").fillna(0).astype(np.int32)
+  
+  age_group['footnote'] = f'Censo do ano de {age_group.iloc[0]['ano']}'
   
   return age_group
 

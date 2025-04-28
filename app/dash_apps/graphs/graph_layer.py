@@ -48,6 +48,11 @@ def create_age_pyramid(year='last')->Figure:
 
   return graph
 
+def get_age_pyramid_info(year='last'):
+  
+  df = data.get_population_age_group(year)
+  return df.iloc[0]['footnote']
+
 def create_most_populated_cities()->Figure:
   """
   Gera um gráfico de barras horizontais com as 10 cidades mais populosas do Piauí.

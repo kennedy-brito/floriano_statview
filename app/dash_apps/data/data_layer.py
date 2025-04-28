@@ -2,6 +2,10 @@ import sidrapy as sd
 import pandas as pd
 import numpy as np
 
+total_population_years = ['last'] + [str(year) for year in range(2010, 2025)]
+
+total_population_years.remove('2023')
+
 def get_population_total(year='last') -> pd.Series:
   """
   Retorna a população total de Floriano para um ano específico, com base nos dados do SIDRA (IBGE).
@@ -29,26 +33,71 @@ def get_population_total(year='last') -> pd.Series:
       ano                 2022
       dtype: object
   """
-  population_by_gender_and_race = '9605'
+  #TODO: UPDATE DOCSTRINGS
+  
+  # There are some years that the data is not available
+  # A solution is to verify if the data is available in the year
+  # if not, we chose the closest data available
+  if year not in total_population_years:
+    years= total_population_years[1:]
+    closest_year = min(years, key=lambda x: abs(
+      int(x) - int(year)))
+    
+    year = closest_year
+    
+  population_tb = '9605'
   city='6'
   population='93'
   floriano_code='2203909'
   total = sd.get_table(
-    table_code=population_by_gender_and_race,
+    table_code=population_tb,   
     territorial_level=city,
     categories=9521,
     variable=population,
     ibge_territorial_code=floriano_code,
     period=year
   )
+  
+  total = total[1:]
+  
+  # the official population data is published in roughly ten years time, so
+  # in 2010, 2022, etc. But an estimative is published nearly every year
+  # in case a user selects a year that has no official data we present an estimative
+  if total.empty:
+    city='6'
+    floriano_code='2203909'
+    estimated_population_tb='6579'
+    estimated_population_v='9324'
 
-  total = total.loc[:, ['V','D2N']]
-  total.columns = ['total_populacao', 'ano']
-  total = total.iloc[1]
+    total = sd.get_table(
+        table_code=estimated_population_tb,
+        territorial_level=city,
+        variable=estimated_population_v,
+        ibge_territorial_code=floriano_code,
+        period=year
+    )
+  
+    total = total.loc[:,['V','D2N']]
+    total.columns = ['total_populacao', 'ano']
+    total = total.iloc[1:].reset_index(drop=True)
 
-  total['ano'] = int(total['ano'])
-  total['total_populacao'] = int(total['total_populacao'])
-  total['footnote'] = f"Censo Oficial: {total['ano']}"
+    total.loc[:,"total_populacao"] = pd.to_numeric( total.loc[:,"total_populacao"], errors="coerce").fillna(0).astype(np.int32)
+    total.loc[:,"ano"] = pd.to_numeric( total.loc[:,"ano"], errors="coerce").fillna(0).astype(np.int32)
+   
+    total = total.iloc[0]
+
+    total['footnote'] = f"Estimativa do Censo de {total['ano']}"
+
+  else:
+    total = total.loc[:, ['V','D2N']]
+    total.columns = ['total_populacao', 'ano']
+
+    total['ano'] = int(total.iloc[0]['ano'])
+    total['total_populacao'] = int(total.iloc[0]['total_populacao'])
+
+    total = total.iloc[0]
+
+    total['footnote'] = f"Censo Oficial de {total['ano']}"
   
   return total
 

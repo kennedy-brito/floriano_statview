@@ -7,35 +7,55 @@ code_level_options = {
     'São Paulo - SP': {'level': 6, 'code': '3550308'}
 }
 
-years = ['Mais Recente'] + [i for i in range(2010,2026)] 
+years = ['Mais Recente'] + [str(i) for i in range(2010,2026)] 
+
+
 
 def get_year_select_card():
     return dcc.Dropdown(
         list(years), 
-        'Piauí', 
+        'Mais Recente', 
         id='year-filter',
         className="dropdown"
     )
 
-def create_metric_card(title: str, value: str, footnote: str = None) -> html.Div:
+def create_metric_card(title: str, value_id, footnote_id) -> html.Div:
   """Retorna um card de métrica simples."""
   return html.Div(
       className="metric-card card",
       children=[
           html.P(title),
-          html.H3(value),
-          html.P(footnote, className='footnote') if footnote else None
+          html.H3(id=value_id),
+          html.P(id=footnote_id, className='footnote')
       ]
   )
 
+@callback(
+    Output("total_population_metric", 'children'),
+    Input("year-filter", 'value')
+)
+def update_all_graphs(year):
+    year = 'last' if year=='Mais Recente' else year
+    return graph.get_metric_total_population(year=year)
 
-def create_graph_card(title: str, graph_id: str, figure) -> html.Div:
+
+@callback(
+    Output("total_population_footnote", 'children'),
+    Input("year-filter", 'value')
+)
+def update_all_footnotes(year):
+    year = 'last' if year=='Mais Recente' else year
+    return graph.get_metric_total_population_info(year=year)
+
+
+def create_graph_card(title: str, graph_id: str, figure, footnote = None) -> html.Div:
   """Retorna um card contendo um gráfico."""
   return html.Div(
       className="graph-card card",
       children=[
           html.P(title),
-          dcc.Graph(id=graph_id, figure=figure)
+          dcc.Graph(id=graph_id, figure=figure),
+          html.P(footnote, className='footnote') if footnote else None
       ]
   )
 

@@ -180,7 +180,7 @@ def get_total_pib(year='last')-> pd.Series:
   
   return total_pib
   
-def get_top_population_cities()-> pd.DataFrame:
+def get_top_population_cities(year='last')-> pd.DataFrame:
   """
   Recupera os 10 municípios mais populosos do estado do Piauí com base no último Censo disponível.
 
@@ -190,6 +190,10 @@ def get_top_population_cities()-> pd.DataFrame:
           - 'municipio' (str): Nome do município.
           - 'ano' (int): Ano de referência.
   """
+  total_population_years = ['last'] + [str(year) for year in range(2010, 2025)]
+  total_population_years.remove('2023')
+  year = verify_closest_year(year, total_population_years)
+  
   with open('app/dash_apps/data/piaui_city_codes.txt', 'r') as file:
     city_codes = file.readline()
   
@@ -203,26 +207,54 @@ def get_top_population_cities()-> pd.DataFrame:
       categories=9521,
       variable=population,
       ibge_territorial_code=city_codes,
-      period='last'
+      period=year
       )
-
-  cities_population = cities_population.loc[:, ['V', 'D1N', 'D2N']]
-
-  cities_population.columns = ['populacao', 'municipio', 'ano']
-
   cities_population = cities_population.iloc[1:].reset_index(drop=True)
 
-  cities_population['municipio'] = cities_population['municipio'].str.replace(' (PI)', '', regex=False)
+  if cities_population.empty:
+    estimated_population_tb='6579'
+    estimated_population_v='9324'
 
-  cities_population.loc[:,"populacao"] = pd.to_numeric( cities_population.loc[:,"populacao"], errors="coerce").fillna(0).astype(np.int32)
+    cities_population = sd.get_table(
+        table_code=estimated_population_tb,
+        territorial_level=city,
+        variable=estimated_population_v,
+        ibge_territorial_code=city_codes,
+        period=year
+    )
+  
+    cities_population = cities_population.loc[:,['V','D1N', 'D2N']]
+    cities_population.columns = ['total_populacao', 'municipio', 'ano']
+    cities_population = cities_population.iloc[1:].reset_index(drop=True)
 
-  cities_population.loc[:,"ano"] = pd.to_numeric( cities_population.loc[:,"ano"], errors="coerce").fillna(0).astype(np.int32)
+    cities_population['municipio'] = cities_population['municipio'].str.replace(' (PI)', '', regex=False)
+    
+    cities_population.loc[:,"populacao"] = pd.to_numeric( cities_population.loc[:,"total_populacao"], errors="coerce").fillna(0).astype(np.int32)
+    
+    cities_population.loc[:,"ano"] = pd.to_numeric( cities_population.loc[:,"ano"], errors="coerce").fillna(0).astype(np.int32)
+
+    cities_population['footnote'] = f"Estimativas do Censo de {cities_population.iloc[0]['ano']}"
+    
+  else:
+    cities_population = cities_population.loc[:, ['V', 'D1N', 'D2N']]
+
+    cities_population.columns = ['populacao', 'municipio', 'ano']
+
+
+    cities_population['municipio'] = cities_population['municipio'].str.replace(' (PI)', '', regex=False)
+
+    cities_population.loc[:,"populacao"] = pd.to_numeric( cities_population.loc[:,"populacao"], errors="coerce").fillna(0).astype(np.int32)
+
+    cities_population.loc[:,"ano"] = pd.to_numeric( cities_population.loc[:,"ano"], errors="coerce").fillna(0).astype(np.int32)
+    
+    cities_population['footnote'] = f"Censo oficial do ano de {cities_population.iloc[0]['ano']}"
 
   cities_population = cities_population.sort_values('populacao',ascending=False)
 
   top_population = cities_population.head(10)
 
   top_population = top_population.reset_index(drop=True)
+
 
   return top_population
 

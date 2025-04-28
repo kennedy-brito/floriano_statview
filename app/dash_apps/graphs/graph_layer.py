@@ -53,7 +53,7 @@ def get_age_pyramid_info(year='last'):
   df = data.get_population_age_group(year)
   return df.iloc[0]['footnote']
 
-def create_most_populated_cities()->Figure:
+def create_most_populated_cities(year='last')->Figure:
   """
   Gera um gráfico de barras horizontais com as 10 cidades mais populosas do Piauí.
   Destaca Floriano com uma cor diferente.
@@ -61,7 +61,7 @@ def create_most_populated_cities()->Figure:
   Returns:
     plotly.graph_objs.Figure: Gráfico com população por município.
   """
-  df = data.get_top_population_cities()
+  df = data.get_top_population_cities(year)
   
   floriano_idx = df[df['municipio'] == "Floriano"].index[0]
   colors = ['#636EFA'] * len(df) #standard blue of plotly
@@ -88,6 +88,10 @@ def create_most_populated_cities()->Figure:
     yaxis_title="Município")
   
   return fig
+
+def get_most_populated_cities_info(year='last'):
+  df = data.get_top_population_cities(year)
+  return df.iloc[0]['footnote']
 
 def create_race_distribution(level: str = '6', local_code: str = '2203909', year='last')->Figure:
   """

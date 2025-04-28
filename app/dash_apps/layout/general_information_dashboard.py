@@ -30,7 +30,7 @@ def create_layout():
         html.Div([
             comp.create_graph_card("Distribuição da População por Raça - Floriano", 'race-distribution-graph', 'race-distribution-footnote'),
             comp.create_race_graph_card(),
-            # comp.create_graph_card("Cidades Mais Populosas do Piauí", 'most-populated-cities-graph', graph.create_most_populated_cities()),
+            comp.create_graph_card("Cidades Mais Populosas do Piauí", 'most-populated-cities-graph', 'most-populated-cities-footnote'),
           ], className='metric-row row'
         ),
         

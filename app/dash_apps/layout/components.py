@@ -15,7 +15,8 @@ outputs_mapping_graphs = {
     "pib_per_capita_metric": graph.get_metric_pib_per_capita,
     'location-distribution-graph': graph.create_location_distribution,
     'age-pyramid-graph': graph.create_age_pyramid,
-    'race-distribution-graph': graph.create_race_distribution
+    'race-distribution-graph': graph.create_race_distribution,
+    'most-populated-cities-graph': graph.create_most_populated_cities
 }
 
 outputs_mapping_infos = {
@@ -24,7 +25,8 @@ outputs_mapping_infos = {
     "pib_per_capita_footnote": graph.get_metric_pib_per_capita_info,
     'location-distribution-footnote': graph.get_location_distribution_info,
     'age-pyramid-footnote': graph.get_age_pyramid_info,
-    'race-distribution-footnote': graph.get_race_distribution_info
+    'race-distribution-footnote': graph.get_race_distribution_info,
+    'most-populated-cities-footnote': graph.get_most_populated_cities_info
 }
 
 def get_year_select_card():

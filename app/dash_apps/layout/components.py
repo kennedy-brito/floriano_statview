@@ -73,12 +73,15 @@ def create_graph_card(title: str, graph_id: str, footnote_id) -> html.Div:
 
 @callback(
     Output('location-comparison-graph', 'figure'),
+    Output('location-comparison-footnote', 'children'),
     Input('local-code-filter', 'value'),
 )
 def update_location_interactive(location_key)-> dict:
     """Atualiza o gráfico de distribuição urbana/rural baseado na localização selecionada."""
     location= code_level_options[location_key]
-    return graph.create_location_distribution(level=location['level'], local_code=location['code'])
+    return [
+        graph.create_location_distribution(level=location['level'], local_code=location['code']),
+        graph.get_location_distribution_info(level=location['level'], local_code=location['code'])]
   
 def create_location_graph_card()-> html.Div:
     """Retorna o card de comparação de zona urbana/rural com dropdown interativo."""
@@ -91,7 +94,8 @@ def create_location_graph_card()-> html.Div:
                 'Piauí', 
                 id='local-code-filter',
                 className="dropdown"),
-            dcc.Graph(id="location-comparison-graph")
+            dcc.Graph(id="location-comparison-graph"),
+            html.P(id='location-comparison-footnote', className='footnote')
         ]
     )
     

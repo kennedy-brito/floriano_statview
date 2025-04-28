@@ -12,13 +12,15 @@ years = ['Mais Recente'] + [str(i) for i in range(2010,2026)]
 outputs_mapping_graphs = {
     "total_population_metric": graph.get_metric_total_population,
     "total_pib_metric": graph.get_metric_total_pib,
-    "pib_per_capita_metric": graph.get_metric_pib_per_capita
+    "pib_per_capita_metric": graph.get_metric_pib_per_capita,
+    'location-distribution-graph': graph.create_location_distribution
 }
 
 outputs_mapping_infos = {
     "total_population_footnote": graph.get_metric_total_population_info,
     "total_pib_footnote": graph.get_metric_total_pib_info,
-    "pib_per_capita_footnote": graph.get_metric_pib_per_capita_info
+    "pib_per_capita_footnote": graph.get_metric_pib_per_capita_info,
+    'location-distribution-footnote': graph.get_location_distribution_info
 }
 
 def get_year_select_card():
@@ -46,7 +48,7 @@ def create_metric_card(title: str, value_id, footnote_id) -> html.Div:
 )
 def update_all_graphs(year):
     year = 'last' if year=='Mais Recente' else year
-    return [func(year) for func in outputs_mapping_graphs.values()]
+    return [func(year=year) for func in outputs_mapping_graphs.values()]
 
 
 @callback(
@@ -55,17 +57,17 @@ def update_all_graphs(year):
 )
 def update_all_footnotes(year):
     year = 'last' if year=='Mais Recente' else year
-    return [func(year) for func in outputs_mapping_infos.values()]
+    return [func(year=year) for func in outputs_mapping_infos.values()]
 
 
-def create_graph_card(title: str, graph_id: str, figure, footnote = None) -> html.Div:
+def create_graph_card(title: str, graph_id: str, footnote_id) -> html.Div:
   """Retorna um card contendo um gráfico."""
   return html.Div(
       className="graph-card card",
       children=[
           html.P(title),
-          dcc.Graph(id=graph_id, figure=figure),
-          html.P(footnote, className='footnote') if footnote else None
+          dcc.Graph(id=graph_id),
+          html.P(id=footnote_id, className='footnote')
       ]
   )
 

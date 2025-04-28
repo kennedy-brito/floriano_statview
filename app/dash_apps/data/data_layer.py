@@ -275,6 +275,7 @@ def get_population_by_local(level='6', local_code='2203909', year='last') -> pd.
       - 'ano' (int): Ano de referência.
       - 'local' (str): Tipo de localidade ('Urbana' ou 'Rural').
   """
+  year = '2022'
   population_by_local = '9923'
   local='1'
   population_perc = '1000093'
@@ -298,6 +299,8 @@ def get_population_by_local(level='6', local_code='2203909', year='last') -> pd.
 
   distribuition.loc[:,"ano"] = pd.to_numeric( distribuition.loc[:,"ano"], errors="coerce").fillna(0).astype(np.int32)
 
+  distribuition['footnote'] = 'Dado disponível somente no ano de 2022'
+  
   return distribuition
 
 def get_pib_per_capita(year='last'):

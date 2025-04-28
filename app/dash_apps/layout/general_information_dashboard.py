@@ -21,7 +21,7 @@ def create_layout():
           ], className='metric-row row'),
         
         html.Div([
-            # comp.create_graph_card("Distribuição da População por Zona Urbana/Rural - Floriano", 'location-distribution-graph', graph.create_location_distribution()),
+            comp.create_graph_card("Distribuição da População por Zona Urbana/Rural - Floriano", 'location-distribution-graph', "location-distribution-footnote"),
             # comp.create_location_graph_card(),
             # comp.create_graph_card("Faixa Etária da Cidade", 'age-pyramid-graph', graph.create_age_pyramid()),
           

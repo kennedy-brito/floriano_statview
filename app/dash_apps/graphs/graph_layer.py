@@ -125,6 +125,23 @@ def create_location_distribution(level: str = '6', local_code: str = '2203909', 
 
   return graph
 
+def get_location_distribution_info(level: str = '6', local_code: str = '2203909', year: str = 'last')->Figure:
+  """
+  Gera um gráfico de pizza com a distribuição da população entre zonas urbanas e rurais.
+
+  Args:
+    level (str): Nível territorial (padrão '6' para município).
+    local_code (str): Código IBGE do município.
+    year (str): Ano da consulta (padrão 'last' para o mais recente).
+
+  Returns:
+    plotly.graph_objs.Figure: Gráfico de pizza com porcentagem por zona (urbana/rural).
+  """
+  distribuition = data.get_population_by_local(level, local_code, year)
+
+  return distribuition.iloc[0]['footnote']
+
+
 def create_literacy_table(level: str = '6', local_code: str = '2203909', year: str = 'last')->Figure:
   df = data.get_literacy_rate(level, local_code, year)
   values = []

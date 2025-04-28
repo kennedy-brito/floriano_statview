@@ -245,7 +245,7 @@ def get_metric_total_pib_info(year='last'):
   Returns:
     str: Texto com o ano do censo usado para o PIB.
   """
-  return f"Censo: {data.get_total_pib(year)['ano']}"
+  return data.get_total_pib(year)['footnote']
 
 def get_metric_pib_per_capita(year='last', format: bool = True):
   """

@@ -9,7 +9,15 @@ code_level_options = {
 
 years = ['Mais Recente'] + [str(i) for i in range(2010,2026)] 
 
+outputs_mapping_graphs = {
+    "total_population_metric": graph.get_metric_total_population,
+    "total_pib_metric": graph.get_metric_total_pib
+}
 
+outputs_mapping_infos = {
+    "total_population_footnote": graph.get_metric_total_population_info,
+    "total_pib_footnote": graph.get_metric_total_pib_info
+}
 
 def get_year_select_card():
     return dcc.Dropdown(
@@ -31,21 +39,21 @@ def create_metric_card(title: str, value_id, footnote_id) -> html.Div:
   )
 
 @callback(
-    Output("total_population_metric", 'children'),
+    [Output(component_id, 'figure' if 'graph' in component_id else 'children') for component_id in outputs_mapping_graphs.keys()],
     Input("year-filter", 'value')
 )
 def update_all_graphs(year):
     year = 'last' if year=='Mais Recente' else year
-    return graph.get_metric_total_population(year=year)
+    return [func(year) for func in outputs_mapping_graphs.values()]
 
 
 @callback(
-    Output("total_population_footnote", 'children'),
+    [Output(component_id, 'children') for component_id in outputs_mapping_infos.keys()],
     Input("year-filter", 'value')
 )
 def update_all_footnotes(year):
     year = 'last' if year=='Mais Recente' else year
-    return graph.get_metric_total_population_info(year=year)
+    return [func(year) for func in outputs_mapping_infos.values()]
 
 
 def create_graph_card(title: str, graph_id: str, figure, footnote = None) -> html.Div:

@@ -2,9 +2,16 @@ import sidrapy as sd
 import pandas as pd
 import numpy as np
 
-total_population_years = ['last'] + [str(year) for year in range(2010, 2025)]
 
-total_population_years.remove('2023')
+
+def verify_closest_year(year, available_years: list):
+    if year not in available_years:
+      years= available_years[1:] if 'last' in available_years else available_years
+      closest_year = min(years, key=lambda x: abs(
+      int(x) - int(year)))
+    
+      year = closest_year
+    return year
 
 def get_population_total(year='last') -> pd.Series:
   """
@@ -38,12 +45,9 @@ def get_population_total(year='last') -> pd.Series:
   # There are some years that the data is not available
   # A solution is to verify if the data is available in the year
   # if not, we chose the closest data available
-  if year not in total_population_years:
-    years= total_population_years[1:]
-    closest_year = min(years, key=lambda x: abs(
-      int(x) - int(year)))
-    
-    year = closest_year
+  total_population_years = ['last'] + [str(year) for year in range(2010, 2025)]
+  total_population_years.remove('2023')
+  year = verify_closest_year(year, total_population_years)
     
   population_tb = '9605'
   city='6'
@@ -149,6 +153,8 @@ def get_total_pib(year='last')-> pd.Series:
           - 'total' (int): Valor total do PIB em reais (convertido de milhares).
           - 'ano' (int): Ano de referência.
   """
+  total_pib_years = ['last'] + [str(year) for year in range(2010, 2022)]
+  year = verify_closest_year(year, total_pib_years)
   pib_composition='5938'
   city='6'
   floriano_code='2203909'
@@ -166,6 +172,8 @@ def get_total_pib(year='last')-> pd.Series:
   total_pib = total_pib.iloc[1]
   total_pib['total'] = int(total_pib['total'])*1000
   total_pib['ano'] = int(total_pib['ano']) 
+  
+  total_pib['footnote'] = f'Censo do ano de {total_pib['ano']}'
   
   return total_pib
   

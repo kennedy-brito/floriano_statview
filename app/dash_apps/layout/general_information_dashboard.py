@@ -15,7 +15,7 @@ def create_layout():
           ], className="year-select"),
         html.Div([
             comp.create_metric_card("População Total", "total_population_metric", "total_population_footnote"),
-            # comp.create_metric_card("PIB de Floriano", graph.get_metric_total_pib(), graph.get_metric_total_pib_info()),
+            comp.create_metric_card("PIB de Floriano", "total_pib_metric", "total_pib_footnote"),
             # comp.create_metric_card("PIB Per Capita de Floriano", graph.get_metric_pib_per_capita(), graph.get_metric_pib_per_capita_info()),
           
           ], className='metric-row row'),

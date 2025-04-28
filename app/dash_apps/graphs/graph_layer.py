@@ -109,6 +109,10 @@ def create_race_distribution(level: str = '6', local_code: str = '2203909', year
 
   return graph
 
+def get_race_distribution_info(level: str = '6', local_code: str = '2203909', year: str = 'last')->Figure:
+  distribuition = data.get_population_by_race(level, local_code, year)
+
+  return distribuition.iloc[0]['footnote']
 
 def get_location_distribution_info(level: str = '6', local_code: str = '2203909', year: str = 'last')->Figure:
   distribuition = data.get_population_by_race(level, local_code, year)

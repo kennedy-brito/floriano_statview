@@ -24,7 +24,7 @@ outputs_mapping_infos = {
     "pib_per_capita_footnote": graph.get_metric_pib_per_capita_info,
     'location-distribution-footnote': graph.get_location_distribution_info,
     'age-pyramid-footnote': graph.get_age_pyramid_info,
-    'race-distribution-footnote': graph.get_age_pyramid_info
+    'race-distribution-footnote': graph.get_race_distribution_info
 }
 
 def get_year_select_card():

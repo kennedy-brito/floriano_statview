@@ -89,7 +89,7 @@ def create_most_populated_cities()->Figure:
   
   return fig
 
-def create_race_distribution(level: str = '6', local_code: str = '2203909')->Figure:
+def create_race_distribution(level: str = '6', local_code: str = '2203909', year='last')->Figure:
   """
   Gera um gráfico de pizza com a distribuição racial da população de Floriano.
 
@@ -101,13 +101,19 @@ def create_race_distribution(level: str = '6', local_code: str = '2203909')->Fig
     plotly.graph_objs.Figure: Gráfico de pizza com porcentagem por raça.
   """
   graph = px.pie(
-    data_frame=data.get_population_by_race(level, local_code),
+    data_frame=data.get_population_by_race(level, local_code, year),
     names='raca',
     values='porcentagem',
     labels={'raca':"Raça", 'porcentagem': "Porcentagem"}
   )
 
   return graph
+
+
+def get_location_distribution_info(level: str = '6', local_code: str = '2203909', year: str = 'last')->Figure:
+  distribuition = data.get_population_by_race(level, local_code, year)
+
+  return distribuition.iloc[0]['footnote']
 
 def create_location_distribution(level: str = '6', local_code: str = '2203909', year: str = 'last')->Figure:
   """

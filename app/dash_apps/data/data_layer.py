@@ -226,7 +226,7 @@ def get_top_population_cities()-> pd.DataFrame:
 
   return top_population
 
-def get_population_by_race(level='6', local_code='2203909') -> pd.DataFrame:
+def get_population_by_race(level='6', local_code='2203909', year='last') -> pd.DataFrame:
   """
   Recupera a distribuição percentual da população de Floriano por raça, com base no último Censo.
 
@@ -240,6 +240,9 @@ def get_population_by_race(level='6', local_code='2203909') -> pd.DataFrame:
           - 'ano' (int): Ano de referência.
           - 'raca' (str): Descrição da raça.
   """
+  race_group_years = ['last', '2010', '2022']
+  year = verify_closest_year(year, race_group_years)
+  
   population_by_race = '9605'
   race='86'
   population_perc = '1000093'
@@ -262,6 +265,8 @@ def get_population_by_race(level='6', local_code='2203909') -> pd.DataFrame:
   distribuition.loc[:,"porcentagem"] = pd.to_numeric( distribuition.loc[:,"porcentagem"], errors="coerce").fillna(0).astype(np.float32)
 
   distribuition.loc[:,"ano"] = pd.to_numeric( distribuition.loc[:,"ano"], errors="coerce").fillna(0).astype(np.int32)
+
+  distribuition['footnote'] = f"Censo do ano de {distribuition.iloc[0]['ano']}"
 
   return distribuition
 

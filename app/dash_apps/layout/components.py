@@ -106,12 +106,19 @@ def create_location_graph_card()-> html.Div:
 
 @callback(
     Output('race-comparison-graph', 'figure'),
+    Output('race-comparison-footnote', 'children'),
     Input('race-code-filter', 'value'),
+    Input('year-filter', 'value')
 )
-def update_race_interactive(location_key):
+def update_race_interactive(location_key, year):
     """Atualiza o gráfico de distribuição racial baseado na localização selecionada."""
+    
+    year = 'last' if year == 'Mais Recente' else year
+    
     location= code_level_options[location_key]
-    return graph.create_race_distribution(level=location['level'], local_code=location['code'])
+    return [
+        graph.create_race_distribution(level=location['level'], local_code=location['code'], year=year),
+        graph.get_race_distribution_info(level=location['level'], local_code=location['code'], year=year)]
 
 def create_race_graph_card()-> html.Div:
     """Retorna o card de comparação de raça com dropdown interativo."""
@@ -120,7 +127,8 @@ def create_race_graph_card()-> html.Div:
         children=[
             html.P("Distribuição da População por Raça", id="race-comparison-title"),
             dcc.Dropdown(list(code_level_options.keys()), 'Piauí', id='race-code-filter', className="dropdown"),
-            dcc.Graph(id="race-comparison-graph")
+            dcc.Graph(id="race-comparison-graph"),
+            html.P(id='race-comparison-footnote', className='footnote')
         ]
     )
 

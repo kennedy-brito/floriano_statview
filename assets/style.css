@@ -5,7 +5,10 @@ body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #c1cdfe;
   margin: 0;
-  padding: 5px;
+}
+
+main{
+  padding: 5px 0px 0px 15px;
 }
 
 h1 {
@@ -29,7 +32,7 @@ header {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  justify-content: center;
+  justify-content: left;
   /* Espaço entre os cards */
   margin-bottom: 2rem;
 }
@@ -45,6 +48,7 @@ header {
   transition: transform 0.2s ease;
   flex: 1 1 30%;
   min-width: 250px;
+  max-width: 32%;
 }
 
 .card:hover {
@@ -111,12 +115,21 @@ p.footnote {
   border-top: 1px solid #eee;
 }
 
+.dropdown{
+  margin-bottom: 5px;
+}
+
+.year-select-card{
+  margin-bottom: 10px;
+  width: 33%;
+}
 /* =======================
    Responsividade
 ========================== */
 @media (max-width: 768px) {
   .card {
     flex: 1 1 100%;
+    max-width: 100%;
   }
 
   h1 {

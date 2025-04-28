@@ -10,7 +10,9 @@ def create_layout():
           html.H1('Floriano StatView - Informações Gerais')
       ]),
       html.Main(id='content', children=[
-        
+        html.Div([
+          comp.get_year_select_card()
+          ], className="year-select"),
         html.Div([
             comp.create_metric_card("População Total", graph.get_metric_total_population(), graph.get_metric_total_population_info()),
             comp.create_metric_card("PIB de Floriano", graph.get_metric_total_pib(), graph.get_metric_total_pib_info()),

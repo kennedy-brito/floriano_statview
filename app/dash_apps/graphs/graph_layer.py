@@ -215,7 +215,7 @@ def get_metric_total_population_info(year='last'):
   Returns:
     str: Texto com o ano do censo usado.
   """
-  return f"Censo: {data.get_population_total(year)['ano']}"
+  return data.get_population_total(year)['footnote']
 
 def get_metric_total_pib(year='last', format: bool = True):
   """

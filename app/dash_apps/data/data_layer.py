@@ -48,7 +48,8 @@ def get_population_total(year='last') -> pd.Series:
 
   total['ano'] = int(total['ano'])
   total['total_populacao'] = int(total['total_populacao'])
-
+  total['footnote'] = f"Censo Oficial: {total['ano']}"
+  
   return total
 
 def get_population_age_group(year='last') -> pd.DataFrame:

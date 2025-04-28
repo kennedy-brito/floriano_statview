@@ -7,6 +7,16 @@ code_level_options = {
     'São Paulo - SP': {'level': 6, 'code': '3550308'}
 }
 
+years = ['Mais Recente'] + [i for i in range(2010,2026)] 
+
+def get_year_select_card():
+    return dcc.Dropdown(
+        list(years), 
+        'Piauí', 
+        id='year-filter',
+        className="dropdown"
+    )
+
 def create_metric_card(title: str, value: str, footnote: str = None) -> html.Div:
   """Retorna um card de métrica simples."""
   return html.Div(
@@ -69,7 +79,7 @@ def create_race_graph_card()-> html.Div:
         className="graph-card card",
         children=[
             html.P("Distribuição da População por Raça", id="race-comparison-title"),
-            dcc.Dropdown(list(code_level_options.keys()), 'Piauí', id='race-code-filter'),
+            dcc.Dropdown(list(code_level_options.keys()), 'Piauí', id='race-code-filter', className="dropdown"),
             dcc.Graph(id="race-comparison-graph")
         ]
     )

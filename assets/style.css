@@ -3,7 +3,7 @@
 ========================== */
 body {
   font-family: 'Segoe UI', sans-serif;
-  background-color: #c1cdfe;
+  background-color: #e0e0e0;
   margin: 0;
 }
 
@@ -21,7 +21,6 @@ h1 {
 header {
   background-color: #f7f9fc;
   padding: 1rem 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   margin-bottom: 2rem;
 }
 
@@ -39,10 +38,8 @@ header {
 
 /* Card base */
 .card {
-  background-color: #fff;
+  background-color: #feffff;
   /* mais neutro e moderno */
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 1.25rem 1.5rem;
   box-sizing: border-box;
   transition: transform 0.2s ease;
@@ -76,21 +73,17 @@ header {
   font-size: 1.5rem;
   font-weight: 600;
   margin: 0.5rem 0;
-  color: #2c3e50;
 }
 
 .metric-card p {
   font-size: 0.95rem;
-  color: #555;
   margin: 0;
 }
 
 /* =======================
    Estilo para Cards de Gráficos
 ========================== */
-.graph-card {
-  background-color: #f8f8f8;
-}
+
 
 .graph-card p {
   font-size: 1rem;

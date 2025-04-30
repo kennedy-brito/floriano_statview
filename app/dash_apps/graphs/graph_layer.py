@@ -104,11 +104,16 @@ def create_race_distribution(level: str = '6', local_code: str = '2203909', year
   Returns:
     plotly.graph_objs.Figure: Gráfico de pizza com porcentagem por raça.
   """
-  graph = px.pie(
-    data_frame=data.get_population_by_race(level, local_code, year),
-    names='raca',
-    values='porcentagem',
-    labels={'raca':"Raça", 'porcentagem': "Porcentagem"}
+  df = data.get_population_by_race(level, local_code, year).sort_values(ascending=True,by=['porcentagem'])
+  
+  formatted_values = [f"{v:.2f}" for v in df['porcentagem']]
+  graph = px.bar(
+    data_frame=df,
+    y='raca',
+    x='porcentagem',
+    orientation='h',
+    labels={'raca':"Raça", 'porcentagem': "Porcentagem"},
+    text=formatted_values
   )
 
   return graph

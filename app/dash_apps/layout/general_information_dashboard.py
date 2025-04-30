@@ -22,8 +22,8 @@ def create_layout():
         
         html.Div([
             comp.create_graph_card("Distribuição da População por Zona Urbana/Rural - Floriano", 'location-distribution-graph', "location-distribution-footnote"),
-            comp.create_location_graph_card(),
-            comp.create_graph_card("Faixa Etária da Cidade", 'age-pyramid-graph', 'age-pyramid-footnote'),
+            comp.create_city_location_graph_card(),
+            comp.create_state_location_graph_card(),
           
           ], className='metric-row row'),
           
@@ -38,6 +38,7 @@ def create_layout():
         html.Div([
             comp.create_literacy_tabs_card(),
             comp.create_graph_card("Cidades Mais Populosas do Piauí", 'most-populated-cities-graph', 'most-populated-cities-footnote'),
+            comp.create_graph_card("Faixa Etária da Cidade", 'age-pyramid-graph', 'age-pyramid-footnote'),
           ], className='metric-row row'
         )
       ])

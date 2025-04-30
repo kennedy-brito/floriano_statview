@@ -29,13 +29,15 @@ def create_layout():
           
         html.Div([
             comp.create_graph_card("Distribuição da População por Raça - Floriano", 'race-distribution-graph', 'race-distribution-footnote'),
-            comp.create_race_graph_card(),
-            comp.create_graph_card("Cidades Mais Populosas do Piauí", 'most-populated-cities-graph', 'most-populated-cities-footnote'),
+            comp.create_race_city_graph_card(),
+            comp.create_race_state_graph_card(),
+            
           ], className='metric-row row'
         ),
         
         html.Div([
-            comp.create_literacy_tabs_card()
+            comp.create_literacy_tabs_card(),
+            comp.create_graph_card("Cidades Mais Populosas do Piauí", 'most-populated-cities-graph', 'most-populated-cities-footnote'),
           ], className='metric-row row'
         )
       ])

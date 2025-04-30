@@ -2,9 +2,14 @@
 from dash import html, dcc, callback, Output, Input
 from app.dash_apps.graphs import graph_layer as graph
 
-code_level_options = {
+city_code_options = {
+    'São Paulo': {'level': 6, 'code': '3550308'},
+    'Teresina': {'level': 6, 'code': '2211001'}
+}
+
+state_code_options = {
     'Piauí':{'level': '3', 'code':'22'},
-    'São Paulo - SP': {'level': 6, 'code': '3550308'}
+    'São Paulo':{'level': '3', 'code': '35'}
 }
 
 years = ['Mais Recente'] + [str(i) for i in range(2010,2026)] 
@@ -91,7 +96,7 @@ def create_graph_card(title: str, graph_id: str, footnote_id) -> html.Div:
 )
 def update_location_interactive(location_key)-> dict:
     """Atualiza o gráfico de distribuição urbana/rural baseado na localização selecionada."""
-    location= code_level_options[location_key]
+    location= city_code_options[location_key]
     return [
         graph.create_location_distribution(level=location['level'], local_code=location['code']),
         graph.get_location_distribution_info(level=location['level'], local_code=location['code'])]
@@ -103,7 +108,7 @@ def create_location_graph_card()-> html.Div:
         children=[
             html.P("Distribuição da População por Zona Urbana/Rural - Outros Locais", id="location-comparison-title"),
             dcc.Dropdown(
-                list(code_level_options.keys()), 
+                list(city_code_options.keys()), 
                 'Piauí', 
                 id='local-code-filter',
                 className="dropdown"),
@@ -114,30 +119,59 @@ def create_location_graph_card()-> html.Div:
     
 
 @callback(
-    Output('race-comparison-graph', 'figure'),
-    Output('race-comparison-footnote', 'children'),
-    Input('race-code-filter', 'value'),
+    Output('city-race-comparison-graph', 'figure'),
+    Output('city-race-comparison-footnote', 'children'),
+    Input('race-city-code-filter', 'value'),
     Input('year-filter', 'value')
 )
-def update_race_interactive(location_key, year):
+def update_race_city_interactive(location_key, year):
     """Atualiza o gráfico de distribuição racial baseado na localização selecionada."""
     
     year = 'last' if year == 'Mais Recente' else year
     
-    location= code_level_options[location_key]
+    location= city_code_options[location_key]
     return [
         graph.create_race_distribution(level=location['level'], local_code=location['code'], year=year),
         graph.get_race_distribution_info(level=location['level'], local_code=location['code'], year=year)]
 
-def create_race_graph_card()-> html.Div:
+def create_race_city_graph_card()-> html.Div:
     """Retorna o card de comparação de raça com dropdown interativo."""
     return html.Div(
         className="graph-card card",
         children=[
-            html.P("Distribuição da População por Raça", id="race-comparison-title"),
-            dcc.Dropdown(list(code_level_options.keys()), 'Piauí', id='race-code-filter', className="dropdown"),
-            dcc.Graph(id="race-comparison-graph"),
-            html.P(id='race-comparison-footnote', className='footnote')
+            html.P("Distribuição da População por Raça - Capitais", id="city-race-comparison-title"),
+            dcc.Dropdown(list(city_code_options.keys()), 'Teresina', id='race-city-code-filter', className="dropdown"),
+            dcc.Graph(id="city-race-comparison-graph"),
+            html.P(id='city-race-comparison-footnote', className='footnote')
+        ]
+    )
+
+
+@callback(
+    Output('state-race-comparison-graph', 'figure'),
+    Output('state-race-comparison-footnote', 'children'),
+    Input('race-state-code-filter', 'value'),
+    Input('year-filter', 'value')
+)
+def update_race_state_interactive(location_key, year):
+    """Atualiza o gráfico de distribuição racial baseado na localização selecionada."""
+    
+    year = 'last' if year == 'Mais Recente' else year
+    
+    location= state_code_options[location_key]
+    return [
+        graph.create_race_distribution(level=location['level'], local_code=location['code'], year=year),
+        graph.get_race_distribution_info(level=location['level'], local_code=location['code'], year=year)]
+
+def create_race_state_graph_card()-> html.Div:
+    """Retorna o card de comparação de raça com dropdown interativo."""
+    return html.Div(
+        className="graph-card card",
+        children=[
+            html.P("Distribuição da População por Raça - Estados", id="state-race-comparison-title"),
+            dcc.Dropdown(list(state_code_options.keys()), 'Piauí', id='race-state-code-filter', className="dropdown"),
+            dcc.Graph(id="state-race-comparison-graph"),
+            html.P(id='state-race-comparison-footnote', className='footnote')
         ]
     )
 

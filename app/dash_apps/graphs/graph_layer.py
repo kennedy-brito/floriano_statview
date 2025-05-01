@@ -321,3 +321,34 @@ def get_metric_pib_per_capita_info(year='last'):
     str: Texto com o ano do censo usado para o PIB.
   """
   return data.get_pib_per_capita(year)['footnote']
+
+def create_top_crops(level="6",local_code="2203909", start_year=2010, end_year=2025, top_crops=3):
+  
+  top_crops = data.get_crop_production(level, local_code, start_year, end_year, top_crops)
+  fig = None
+  
+  if start_year < end_year:  
+    fig = px.bar(
+      data_frame=top_crops,
+      y="quantidade",
+      x="ano",
+      text="quantidade",
+      labels={'ano': 'Ano', 'quantidade': 'Produção em Toneladas'},
+      orientation="v",
+      color="produto",
+      color_discrete_sequence=px.colors.qualitative.Set2,
+    )
+  elif start_year == end_year:
+    fig = px.bar(
+      data_frame=top_crops,
+      y="quantidade",
+      x="produto",
+      text="quantidade",
+      labels={'produto': 'Cultura', 'quantidade': 'Produção em Toneladas'},
+      orientation="v",
+      color="produto",
+      color_discrete_sequence=px.colors.qualitative.Set2,
+    )
+    
+
+  return fig

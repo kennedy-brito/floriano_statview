@@ -116,6 +116,17 @@ p.footnote {
   margin: 0px 15px 10px 4px;
   max-width: 100%;
 }
+
+.full-width-card{
+  width: 90%;
+  max-width: 100%;
+}
+
+.alert{
+  color: red;
+  font-size: 1.1rem;
+}
+
 /* =======================
    Responsividade
 ========================== */

@@ -7,6 +7,24 @@ city_code_options = {
     'Teresina': {'level': 6, 'code': '2211001'}
 }
 
+top_productions_slider = dcc.Slider(
+    id="top-productions",
+    min=1,
+    max=10,
+    step=1,
+    value=3,
+    marks={i: str(i) for i in range(1, 11)}
+)
+
+year_range_slider = dcc.RangeSlider(
+    value=[2010, 2025],
+    min=2010,
+    max=2025,
+    step=1,
+    marks={i: str(i) for i in range(2010, 2026, 2)},
+    id="year-slider"
+)
+
 state_code_options = {
     'Piauí':{'level': '3', 'code':'22'},
     'São Paulo':{'level': '3', 'code': '35'}
@@ -238,3 +256,71 @@ def create_literacy_tabs_card()-> html.Div:
             ],
         className="graph-card card",
         )
+
+@callback(
+    Output('top_crops_productions_graph', 'figure'),
+    Output('crops_footnote', 'children'),
+    Input('start-year', 'value'),
+    Input('end-year', 'value'),
+    Input('top-n-producoes', 'value')
+)
+def update_top_crops_graph(start_year, end_year, top_crops):
+    footnote = ''
+    
+    if start_year > end_year:
+        start_year, end_year = end_year, start_year
+        footnote = f"O intervalo foi ajustado automaticamente para {start_year}–{end_year}."
+    
+    top_crops_graph = graph.create_top_crops(start_year=start_year, end_year= end_year, top_crops=top_crops)
+    
+    return [top_crops_graph, footnote]
+
+def create_production_graph_card() -> html.Div:
+    """Retorna o card de Maiores Produções com filtros de ano e quantidade de maiores produções."""
+    return html.Div(
+        className="full-width-card graph-card card",
+        children=[
+            html.P("Maiores Produções", id="production-title"),
+
+            html.Div(
+                className="production-controls-container",
+                children=[
+                    html.Div(
+                        className="year-selectors",
+                        children=[
+                            html.Label("Ano Inicial", htmlFor="ano-inicial"),
+                            dcc.Dropdown(
+                                id='start-year',
+                                options=[{'label': str(ano), 'value': ano} for ano in range(2010, 2026)],
+                                value=2010,
+                                className="dropdown"
+                            ),
+                            html.Label("Ano Final", htmlFor="ano-final"),
+                            dcc.Dropdown(
+                                id='end-year',
+                                options=[{'label': str(ano), 'value': ano} for ano in range(2010, 2026)],
+                                value=2025,
+                                className="dropdown"
+                            )
+                        ]
+                    ),
+                    html.Div(
+                        className="quantidade-maiores-selector",
+                        children=[
+                            html.Label("Top N Produções", htmlFor="top-n-producoes"),
+                            dcc.Dropdown(
+                                id='top-n-producoes',
+                                options=[{'label': f'Top {n}', 'value': n} for n in range(1, 11)],
+                                value=3,
+                                className="dropdown"
+                            )
+                        ]
+                    )
+                ]
+            ),
+
+            dcc.Graph(id="top_crops_productions_graph"),
+            
+            html.P(id='crops_footnote',className='footnote alert')
+        ]
+    )

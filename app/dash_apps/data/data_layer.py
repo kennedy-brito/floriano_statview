@@ -2,6 +2,8 @@ import sidrapy as sd
 import pandas as pd
 import numpy as np
 
+crops_dfs = {}
+
 def verify_closest_year(year, available_years: list):
     if year not in available_years:
       years= available_years[1:] if 'last' in available_years else available_years
@@ -434,3 +436,51 @@ def get_literacy_rate(level=6, code='2203909', year='last') -> pd.DataFrame:
   literacy_rate['footnote'] = 'Dado disponível somente no ano de 2022'
   
   return literacy_rate
+
+def get_crop_production(level="6",local_code="2203909", start_year=2010, end_year=2025, top_crops=3)-> pd.DataFrame:
+  """Carrega e processa os dados das Lavouras."""
+  key = f"{level}_{local_code}"
+  
+  crops = crops_dfs.get(key)
+  
+  if crops is None:
+    temporary_permanent_crops_production_tb='5457'
+    crops = sd.get_table(
+      table_code=temporary_permanent_crops_production_tb,
+      classifications={'782':"allxt"},
+      period='all',
+      territorial_level=level,
+      ibge_territorial_code=local_code,
+      variable='214')
+    
+    crops.columns = crops.iloc[0]
+    crops = crops.iloc[1:].reset_index(drop=True)
+    
+    crops = crops.loc[:, ["Unidade de Medida","Valor","Ano","Produto das lavouras temporárias e permanentes"]]
+    
+    crops.columns = ["medida", "quantidade", "ano", "produto"]
+    
+    crops = crops[
+      (crops["quantidade"] != '...') &
+      (crops["medida"] == 'Toneladas') &
+      (crops["quantidade"] != 'X')
+    ]
+    
+    crops.loc[:,"quantidade"] = crops.loc[:,"quantidade"].replace(['-', '..'], value='0')
+    crops.loc[:,"quantidade"] = crops.loc[:,"quantidade"].str.strip()
+    crops.loc[:,"quantidade"] = pd.to_numeric( crops.loc[:,"quantidade"], errors="coerce").fillna(0).astype(np.int32)
+    crops.loc[:,"ano"] = pd.to_numeric( crops.loc[:,"ano"], errors="coerce").fillna(0).astype(np.int32)
+    
+    crops = crops[crops["ano"] >= 2002]
+    
+    crops = crops.query("quantidade != 0")
+    
+    crops.sort_values(by='quantidade', ascending=False, inplace=True)
+
+    crops_dfs[key] = crops
+    
+  crops = crops.query(f"ano >= {start_year} and ano <= {end_year}")
+  
+  crops = crops.groupby("ano", group_keys=False).head(top_crops)
+  
+  return crops

@@ -40,6 +40,10 @@ def create_layout():
             comp.create_graph_card("Cidades Mais Populosas do Piauí", 'most-populated-cities-graph', 'most-populated-cities-footnote'),
             comp.create_graph_card("Faixa Etária da Cidade", 'age-pyramid-graph', 'age-pyramid-footnote'),
           ], className='metric-row row'
+        ),
+        html.Div([
+            comp.create_production_graph_card(),
+          ], className='metric-row row'
         )
       ])
   ])

@@ -280,7 +280,7 @@ def create_production_graph_card() -> html.Div:
     return html.Div(
         className="full-width-card graph-card card",
         children=[
-            html.P("Maiores Produções", id="production-title"),
+            html.P("Maiores Produções Agrícolas", id="production-title"),
 
             html.Div(
                 className="production-controls-container",
@@ -291,15 +291,15 @@ def create_production_graph_card() -> html.Div:
                             html.Label("Ano Inicial", htmlFor="ano-inicial"),
                             dcc.Dropdown(
                                 id='start-year',
-                                options=[{'label': str(ano), 'value': ano} for ano in range(2010, 2026)],
+                                options=[{'label': str(ano), 'value': ano} for ano in range(2010, 2024)],
                                 value=2010,
                                 className="dropdown"
                             ),
                             html.Label("Ano Final", htmlFor="ano-final"),
                             dcc.Dropdown(
                                 id='end-year',
-                                options=[{'label': str(ano), 'value': ano} for ano in range(2010, 2026)],
-                                value=2025,
+                                options=[{'label': str(ano), 'value': ano} for ano in range(2010, 2024)],
+                                value=2023,
                                 className="dropdown"
                             )
                         ]

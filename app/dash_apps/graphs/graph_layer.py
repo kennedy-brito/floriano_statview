@@ -71,7 +71,11 @@ def create_most_populated_cities(year='last')->Figure:
     x=df['populacao'],
     y=df['municipio'],
     orientation='h',
-    marker_color=colors
+    marker_color=colors,
+    hovertemplate=(
+      'População: %{x:,}<br>'  
+      'Cidade: %{y}<extra></extra>'  
+      )
     )
   
 
@@ -85,7 +89,8 @@ def create_most_populated_cities(year='last')->Figure:
   
     font_family='Segoe UI',
     font_weight=600,
-    yaxis_title="Município")
+    yaxis_title="Município",
+    )
   
   return fig
 
@@ -333,7 +338,7 @@ def create_top_crops(level="6",local_code="2203909", start_year=2010, end_year=2
       y="quantidade",
       x="ano",
       text="quantidade",
-      labels={'ano': 'Ano', 'quantidade': 'Produção em Toneladas'},
+      labels={'ano': 'Ano', 'quantidade': 'Produção em Toneladas', 'produto': 'Cultura'},
       orientation="v",
       color="produto",
       color_discrete_sequence=px.colors.qualitative.Set2,

@@ -122,9 +122,8 @@ p.footnote {
   max-width: 100%;
 }
 
-.alert{
+p.alert{
   color: red;
-  font-size: 1.1rem;
 }
 
 /* =======================

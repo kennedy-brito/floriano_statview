@@ -43,7 +43,9 @@ def create_age_pyramid(year='last')->Figure:
 
   graph.update_layout(dict(
     font_family='Segoe UI',
-    font_weight=700
+    font_weight=700,
+    plot_bgcolor='rgba(0,0,0,0)',
+    paper_bgcolor='rgba(0,0,0,0)',
   ))
 
   return graph
@@ -90,6 +92,8 @@ def create_most_populated_cities(year='last')->Figure:
     font_family='Segoe UI',
     font_weight=600,
     yaxis_title="Município",
+    plot_bgcolor='rgba(0,0,0,0)',
+    paper_bgcolor='rgba(0,0,0,0)',
     )
   
   return fig
@@ -121,6 +125,11 @@ def create_race_distribution(level: str = '6', local_code: str = '2203909', year
     text=formatted_values
   )
 
+  graph.update_layout(
+    plot_bgcolor='rgba(0,0,0,0)',
+    paper_bgcolor='rgba(0,0,0,0)',
+  )
+  
   return graph
 
 def get_race_distribution_info(level: str = '6', local_code: str = '2203909', year: str = 'last')->Figure:
@@ -151,6 +160,11 @@ def create_location_distribution(level: str = '6', local_code: str = '2203909', 
     values='porcentagem',
     labels={'local':"Zona", 'porcentagem': "Porcentagem"}
   )
+  
+  graph.update_layout(
+    plot_bgcolor='rgba(0,0,0,0)',
+    paper_bgcolor='rgba(0,0,0,0)',
+  )
 
   return graph
 
@@ -178,15 +192,23 @@ def create_literacy_table(level: str = '6', local_code: str = '2203909', year: s
   for value in df['quantidade']:
     values.append(f"{value:.2f}")
     
-  graph = go.Figure(data=[go.Table(
-    header=dict(values=["Faixa Etária", "Taxa de Alfabetização (%)"],
-                fill_color='paleturquoise',
-                align='left'),
-    cells=dict(values=[df['grupo'], values ],
-               fill_color='lavender',
-               align='left'))
-])
+  graph = go.Figure(
+    data=[
+      go.Table(
+        header=dict(
+          values=["Faixa Etária", "Taxa de Alfabetização (%)"],
+          fill_color='paleturquoise',
+          align='left'),
+        cells=dict(
+          values=[df['grupo'], values ],
+          fill_color='lavender',
+          align='left'))
+      ])
 
+  graph.update_layout(
+    plot_bgcolor='rgba(0,0,0,0)',
+    paper_bgcolor='rgba(0,0,0,0)',
+  )
   return graph
 
 
@@ -229,12 +251,15 @@ def create_comparison_literacy(year='last'):
 
   fig.update_layout(
     xaxis=dict(
-        
         tickmode='linear',
         dtick=1
-    ),
+        ),
     yaxis=dict(
-        range=[50, 100])
+        range=[50, 100]
+        ),
+    plot_bgcolor='rgba(0,0,0,0)',
+    paper_bgcolor='rgba(0,0,0,0)',
+  
   )   
     
   return fig
@@ -354,6 +379,10 @@ def create_top_crops(level="6",local_code="2203909", start_year=2010, end_year=2
       color="produto",
       color_discrete_sequence=px.colors.qualitative.Set2,
     )
-    
+  
+  fig.update_layout(  
+    plot_bgcolor='rgba(0,0,0,0)',
+    paper_bgcolor='rgba(0,0,0,0)',
+  )
 
   return fig

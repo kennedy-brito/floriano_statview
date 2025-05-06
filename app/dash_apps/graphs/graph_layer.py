@@ -5,6 +5,27 @@ from plotly.graph_objs import Figure
 from app.dash_apps.data import data_layer as data
 import plotly.graph_objects as go
 
+COLOR_PALETTE = [
+  "#2B6CB0",  # Azul escuro
+  "#68D391",  # Verde claro
+  "#DD6B20",  # Laranja queimado
+  "#9F7AEA",  # Roxo médio
+  "#ED64A6",  # Rosa vibrante
+  "#ECC94B",  # Amarelo ouro
+  "#4FD1C5",  # Verde água
+  "#A0AEC0",  # Cinza neutro
+]
+
+CROPS_COLOR_PALETTE = {
+    "Milho (em grão)": "#2B6CB0",     # Azul escuro
+    "Mandioca": "#68D391",            # Verde claro
+    "Arroz (em casca)": "#DD6B20",    # Laranja queimado
+    "Coco-da-baía": "#9F7AEA",        # Roxo médio
+    "Feijão (em grão)": "#ED64A6",    # Rosa vibrante
+    "Castanha de caju": "#ECC94B",    # Amarelo ouro
+    "Melancia": "#4FD1C5",            # Verde água
+    "Outros": "#A0AEC0"               # Cinza neutro
+}
 def format_pib_value(value) -> str:
   """
   Formata um valor numérico em reais com notação apropriada
@@ -39,6 +60,7 @@ def create_age_pyramid(year='last')->Figure:
     y='grupo_idade',
     orientation='h',
     labels={'grupo_idade':'Grupo', 'valor': 'População'},
+    color_discrete_sequence=COLOR_PALETTE,
     )
 
   graph.update_layout(dict(
@@ -66,8 +88,8 @@ def create_most_populated_cities(year='last')->Figure:
   df = data.get_top_population_cities(year)
   
   floriano_idx = df[df['municipio'] == "Floriano"].index[0]
-  colors = ['#636EFA'] * len(df) #standard blue of plotly
-  colors[floriano_idx] = '#EF553B' #standard red of plotly
+  colors = [COLOR_PALETTE[0],] * len(df) 
+  colors[floriano_idx] = COLOR_PALETTE[3]
   
   graph = go.Bar(
     x=df['populacao'],
@@ -122,7 +144,8 @@ def create_race_distribution(level: str = '6', local_code: str = '2203909', year
     x='porcentagem',
     orientation='h',
     labels={'raca':"Raça", 'porcentagem': "Porcentagem"},
-    text=formatted_values
+    text=formatted_values,
+    color_discrete_sequence=COLOR_PALETTE,
   )
 
   graph.update_layout(
@@ -158,7 +181,8 @@ def create_location_distribution(level: str = '6', local_code: str = '2203909', 
     data_frame=data.get_population_by_local(level, local_code, year),
     names='local',
     values='porcentagem',
-    labels={'local':"Zona", 'porcentagem': "Porcentagem"}
+    labels={'local':"Zona", 'porcentagem': "Porcentagem"},
+    color_discrete_sequence=COLOR_PALETTE,
   )
   
   graph.update_layout(
@@ -197,13 +221,19 @@ def create_literacy_table(level: str = '6', local_code: str = '2203909', year: s
       go.Table(
         header=dict(
           values=["Faixa Etária", "Taxa de Alfabetização (%)"],
-          fill_color='paleturquoise',
-          align='left'),
+          fill_color='#A2D8F4',  # Azul suave
+          align='left',
+          font=dict(color='#2B5C7B')  # Azul escuro
+          ),
         cells=dict(
-          values=[df['grupo'], values ],
-          fill_color='lavender',
-          align='left'))
-      ])
+          values=[df['grupo'], values],
+          fill_color='lavender',  # Lavanda suave
+          align='left',
+          font=dict(color='#4A4A4A')  # Texto cinza escuro para melhor legibilidade
+          )
+        )
+      ]
+    )
 
   graph.update_layout(
     plot_bgcolor='rgba(0,0,0,0)',
@@ -246,7 +276,7 @@ def create_comparison_literacy(year='last'):
     color="local",
     labels={"quantidade": "Taxa de Alfabetização (%)", "grupo": "Faixa Etária", "local": "Localidade"},
     markers=True,
-    color_discrete_sequence=px.colors.qualitative.Set2,
+    color_discrete_sequence=COLOR_PALETTE,
   )
 
   fig.update_layout(
@@ -366,7 +396,8 @@ def create_top_crops(level="6",local_code="2203909", start_year=2010, end_year=2
       labels={'ano': 'Ano', 'quantidade': 'Produção em Toneladas', 'produto': 'Cultura'},
       orientation="v",
       color="produto",
-      color_discrete_sequence=px.colors.qualitative.Set2,
+      category_orders={'produto': CROPS_COLOR_PALETTE.keys()},
+      color_discrete_map=CROPS_COLOR_PALETTE,
     )
   elif start_year == end_year:
     fig = px.bar(
@@ -377,7 +408,8 @@ def create_top_crops(level="6",local_code="2203909", start_year=2010, end_year=2
       labels={'produto': 'Cultura', 'quantidade': 'Produção em Toneladas'},
       orientation="v",
       color="produto",
-      color_discrete_sequence=px.colors.qualitative.Set2,
+      category_orders={'produto': CROPS_COLOR_PALETTE.keys()},
+      color_discrete_map=CROPS_COLOR_PALETTE,
     )
   
   fig.update_layout(  

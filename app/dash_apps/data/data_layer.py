@@ -481,6 +481,6 @@ def get_crop_production(level="6",local_code="2203909", start_year=2010, end_yea
     
   crops = crops.query(f"ano >= {start_year} and ano <= {end_year}")
   
-  crops = crops.groupby("ano", group_keys=False).head(top_crops)
+  crops = crops.groupby("ano", group_keys=False).head(top_crops).sort_values(by='quantidade', ascending=False)
   
   return crops

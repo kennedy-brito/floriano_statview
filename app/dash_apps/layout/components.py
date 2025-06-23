@@ -3,8 +3,33 @@ from dash import html, dcc, callback, Output, Input
 from app.dash_apps.graphs import graph_layer as graph
 
 city_code_options = {
-    'São Paulo': {'level': 6, 'code': '3550308'},
-    'Teresina': {'level': 6, 'code': '2211001'}
+    'Rio Branco - AC': {'level': 6, 'code': '1200401'},
+    'Macapá - AP': {'level': 6, 'code': '1600303'},
+    'Manaus - AM': {'level': 6, 'code': '1302603'},
+    'Belém - PA': {'level': 6, 'code': '1501402'},
+    'Porto Velho - RO': {'level': 6, 'code': '1100205'},
+    'Boa Vista - RR': {'level': 6, 'code': '1400100'},
+    'Palmas - TO': {'level': 6, 'code': '1721000'},
+    'Maceió - AL': {'level': 6, 'code': '2704302'},
+    'Salvador - BA': {'level': 6, 'code': '2927408'},
+    'Fortaleza - CE': {'level': 6, 'code': '2304400'},
+    'São Luís - MA': {'level': 6, 'code': '2111300'},
+    'João Pessoa - PB': {'level': 6, 'code': '2507507'},
+    'Recife - PE': {'level': 6, 'code': '2611606'},
+    'Teresina - PI': {'level': 6, 'code': '2211001'},
+    'Natal - RN': {'level': 6, 'code': '2408102'},
+    'Aracaju - SE': {'level': 6, 'code': '2800308'},
+    'Goiânia - GO': {'level': 6, 'code': '5208707'},
+    'Cuiabá - MT': {'level': 6, 'code': '5103403'},
+    'Campo Grande - MS': {'level': 6, 'code': '5002704'},
+    'Brasília - DF': {'level': 6, 'code': '5300108'},
+    'Vitória - ES': {'level': 6, 'code': '3205309'},
+    'Belo Horizonte - MG': {'level': 6, 'code': '3106200'},
+    'Rio de Janeiro - RJ': {'level': 6, 'code': '3304557'},
+    'São Paulo - SP': {'level': 6, 'code': '3550308'},
+    'Curitiba - PR': {'level': 6, 'code': '4106902'},
+    'Porto Alegre - RS': {'level': 6, 'code': '4314902'},
+    'Florianópolis - SC': {'level': 6, 'code': '4205407'}
 }
 
 top_productions_slider = dcc.Slider(
@@ -24,10 +49,34 @@ year_range_slider = dcc.RangeSlider(
     marks={i: str(i) for i in range(2010, 2026, 2)},
     id="year-slider"
 )
-
 state_code_options = {
-    'Piauí':{'level': '3', 'code':'22'},
-    'São Paulo':{'level': '3', 'code': '35'}
+    'Acre': {'level': '3', 'code': '12'},
+    'Alagoas': {'level': '3', 'code': '27'},
+    'Amapá': {'level': '3', 'code': '16'},
+    'Amazonas': {'level': '3', 'code': '13'},
+    'Bahia': {'level': '3', 'code': '29'},
+    'Ceará': {'level': '3', 'code': '23'},
+    'Distrito Federal': {'level': '3', 'code': '53'},
+    'Espírito Santo': {'level': '3', 'code': '32'},
+    'Goiás': {'level': '3', 'code': '52'},
+    'Maranhão': {'level': '3', 'code': '21'},
+    'Mato Grosso': {'level': '3', 'code': '51'},
+    'Mato Grosso do Sul': {'level': '3', 'code': '50'},
+    'Minas Gerais': {'level': '3', 'code': '31'},
+    'Pará': {'level': '3', 'code': '15'},
+    'Paraíba': {'level': '3', 'code': '25'},
+    'Paraná': {'level': '3', 'code': '41'},
+    'Pernambuco': {'level': '3', 'code': '26'},
+    'Piauí': {'level': '3', 'code': '22'},
+    'Rio de Janeiro': {'level': '3', 'code': '33'},
+    'Rio Grande do Norte': {'level': '3', 'code': '24'},
+    'Rio Grande do Sul': {'level': '3', 'code': '43'},
+    'Rondônia': {'level': '3', 'code': '11'},
+    'Roraima': {'level': '3', 'code': '14'},
+    'Santa Catarina': {'level': '3', 'code': '42'},
+    'São Paulo': {'level': '3', 'code': '35'},
+    'Sergipe': {'level': '3', 'code': '28'},
+    'Tocantins': {'level': '3', 'code': '17'}
 }
 
 years = ['Mais Recente'] + [str(i) for i in range(2010,2026)] 
@@ -127,7 +176,7 @@ def create_city_location_graph_card()-> html.Div:
             html.P("Distribuição da População por Zona Urbana/Rural - Capitais", id="city-comparison-title"),
             dcc.Dropdown(
                 list(city_code_options.keys()), 
-                'Teresina', 
+                'Teresina - PI', 
                 id='city-code-filter',
                 className="dropdown"),
             dcc.Graph(id="city-comparison-graph"),
@@ -186,7 +235,7 @@ def create_race_city_graph_card()-> html.Div:
         className="graph-card card",
         children=[
             html.P("Distribuição da População por Raça - Capitais", id="city-race-comparison-title"),
-            dcc.Dropdown(list(city_code_options.keys()), 'Teresina', id='race-city-code-filter', className="dropdown"),
+            dcc.Dropdown(list(city_code_options.keys()), 'Teresina - PI', id='race-city-code-filter', className="dropdown"),
             dcc.Graph(id="city-race-comparison-graph"),
             html.P(id='city-race-comparison-footnote', className='footnote')
         ]

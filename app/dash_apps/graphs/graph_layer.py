@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 from plotly.graph_objs import Figure
-from app.dash_apps.data import data_layer as data, population as pop, economy as econ
+from app.dash_apps.data import education as educ, population as pop, economy as econ
 import plotly.graph_objects as go
 
 COLOR_PALETTE = [
@@ -209,7 +209,7 @@ def get_location_distribution_info(level: str = '6', local_code: str = '2203909'
   return distribuition.iloc[0]['footnote']
 
 def create_literacy_table(level: str = '6', local_code: str = '2203909', year: str = 'last')->Figure:
-  df = data.get_literacy_rate(level, local_code, year)
+  df = educ.get_literacy_rate(level, local_code, year)
   values = []
   
   for value in df['quantidade']:
@@ -256,11 +256,11 @@ def create_comparison_literacy(year='last'):
   Returns:
       plotly.graph_objs._figure.Figure: Objeto de figura contendo o gráfico de linha com os dados de alfabetização.
   """
-  floriano_dt = data.get_literacy_rate(level= 6,code=2203909, year=year)
+  floriano_dt = educ.get_literacy_rate(level= 6,code=2203909, year=year)
     
-  piaui_dt = data.get_literacy_rate(level= 3,code=22, year=year)
+  piaui_dt = educ.get_literacy_rate(level= 3,code=22, year=year)
   
-  brasil_dt = data.get_literacy_rate(level= 1,code=1, year=year)
+  brasil_dt = educ.get_literacy_rate(level= 1,code=1, year=year)
   
   df = pd.concat(
     [floriano_dt, piaui_dt, brasil_dt],
@@ -293,7 +293,7 @@ def create_comparison_literacy(year='last'):
   return fig
 
 def get_literacy_rate_info(year='last'):
-  floriano_dt = data.get_literacy_rate(level= 6,code=2203909, year=year)
+  floriano_dt = educ.get_literacy_rate(level= 6,code=2203909, year=year)
   return floriano_dt.iloc[0]['footnote']
 
 def get_metric_total_population(year='last'):

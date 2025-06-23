@@ -2,54 +2,79 @@ import sidrapy as sd
 import pandas as pd
 import numpy as np
 
+# Usado como cache improvisado para os dados de culturas (crops)
+# Para melhor desempenho, recomenda-se substituir por uma implementação de cache real
+# Essa abordagem pode ser aplicada a outros conjuntos de dados para melhorar o desempenho após o primeiro uso
 crops_dfs = {}
 
 def verify_closest_year(year, available_years: list):
-    if year not in available_years:
-      years= available_years[1:] if 'last' in available_years else available_years
-      closest_year = min(years, key=lambda x: abs(
-      int(x) - int(year)))
-    
-      year = closest_year
-    return year
+  """
+  Verifica se o ano solicitado está disponível; caso não esteja, retorna o ano mais próximo disponível.
+
+  Se a lista de anos disponíveis contiver a palavra-chave 'last', ela será ignorada para calcular o ano mais próximo.
+  O cálculo é feito com base na menor diferença absoluta entre o ano solicitado e os anos disponíveis.
+
+  Args:
+      year (str or int): Ano desejado, no formato string ou inteiro.
+      available_years (list): Lista de anos disponíveis (strings ou inteiros), podendo incluir 'last'.
+
+  Returns:
+      str: Ano válido mais próximo, no mesmo formato que os elementos de `available_years`.
+
+  Example:
+      >>> verify_closest_year('2023', ['last', '2020', '2022', '2024'])
+      '2022'
+  """
+  if year not in available_years:
+    years= available_years[1:] if 'last' in available_years else available_years
+    closest_year = min(years, key=lambda x: abs(
+    int(x) - int(year)))
+  
+    year = closest_year
+  return year
 
 def get_population_total(year='last') -> pd.Series:
   """
-  Retorna a população total de Floriano para um ano específico, com base nos dados do SIDRA (IBGE).
+  Retorna a população total do município de Floriano (PI) para um ano específico, 
+  com base em dados oficiais ou estimativas do IBGE via SIDRA.
 
-  A função consulta a tabela de população por sexo e cor/raça (código 9605), no nível territorial municipal,
-  para o município de Floriano (código 2203909). O resultado é uma série do pandas contendo o ano e a
-  população total estimada ou recenseada, dependendo do período informado.
+  Por padrão, busca o dado mais recente disponível. Se o ano informado não tiver 
+  dado oficial (Censo), a função retorna uma estimativa para o ano mais próximo 
+  possível, garantindo sempre um valor válido.
+
+  O resultado inclui a população total, o ano de referência e uma nota de rodapé 
+  indicando se o valor é oficial ou estimado.
 
   Args:
-      year (str or int, optional): O ano desejado no formato 'YYYY' ou 'last' (padrão),
-          que retorna o dado mais recente disponível.
+      year (str or int, optional): Ano desejado no formato 'YYYY' ou 'last' (padrão)
+          para buscar o dado mais recente.
 
   Returns:
-      pd.Series: Uma série contendo:
-          - 'total_populacao': (int) A população total do município de Floriano.
-          - 'ano': (int) O ano de referência do dado retornado.
+      pd.Series: Série contendo:
+          - 'total_populacao': (int) População total de Floriano.
+          - 'ano': (int) Ano de referência do dado.
+          - 'footnote': (str) Descrição indicando se é estimativa ou dado de Censo.
 
   Raises:
-      ValueError: Se a resposta da API estiver vazia ou mal formatada.
-      KeyError: Se as colunas esperadas não estiverem presentes na resposta.
+      ValueError: Se não houver dados disponíveis para o ano informado ou próximo.
+      KeyError: Se a estrutura de dados retornada pela API for inesperada.
 
   Example:
       >>> get_population_total()
       total_populacao    59236
       ano                 2022
+      footnote    Censo Oficial de 2022
       dtype: object
   """
-  #TODO: UPDATE DOCSTRINGS
   
-  # There are some years that the data is not available
-  # A solution is to verify if the data is available in the year
-  # if not, we chose the closest data available
+  # Existem alguns anos para os quais não há dados disponíveis
+# Uma solução é verificar se há dado oficial para o ano solicitado
+# Caso não haja, escolhe-se o ano mais próximo disponível
   total_population_years = ['last'] + [str(year) for year in range(2010, 2025)]
-  total_population_years.remove('2023')
+  total_population_years.remove('2023') # Não possui dado oficial
   year = verify_closest_year(year, total_population_years)
     
-  population_tb = '9605'
+  population_tb = '9605' # Censo oficial
   city='6'
   population='93'
   floriano_code='2203909'
@@ -64,9 +89,9 @@ def get_population_total(year='last') -> pd.Series:
   
   total = total[1:]
   
-  # the official population data is published in roughly ten years time, so
-  # in 2010, 2022, etc. But an estimative is published nearly every year
-  # in case a user selects a year that has no official data we present an estimative
+  # Os dados oficiais de população são publicados aproximadamente a cada dez anos,
+  # como em 2010 e 2022. Porém, estimativas são divulgadas quase todos os anos.
+  # Caso o usuário solicite um ano sem dado oficial, retorna-se uma estimativa.
   if total.empty:
     city='6'
     floriano_code='2203909'
@@ -107,16 +132,36 @@ def get_population_total(year='last') -> pd.Series:
 
 def get_population_age_group(year='last') -> pd.DataFrame:
   """
-  Recupera a distribuição da população de Floriano por grupo de idade com base no último Censo disponível.
+  Retorna a distribuição da população do município de Floriano (PI) por grupos de idade,
+  com base nos dados oficiais do Censo mais recente ou de um ano especificado.
+
+  Caso o ano informado não tenha dado oficial, a função seleciona automaticamente o ano
+  mais próximo disponível (2010 ou 2022).
+
+  O resultado é um DataFrame com a quantidade de pessoas em cada faixa etária, o ano de 
+  referência e uma nota de rodapé indicando o ano do Censo.
 
   Args:
-      year (str, optional): Ano da consulta. Por padrão, busca o dado mais recente ('last').
+      year (str or int, optional): Ano desejado no formato 'YYYY' ou 'last' (padrão),
+          que retorna o dado mais recente disponível.
 
   Returns:
-      pd.DataFrame: DataFrame com as colunas:
-          - 'valor' (int): Quantidade de pessoas em cada grupo etário.
-          - 'ano' (int): Ano de referência.
+      pd.DataFrame: DataFrame contendo:
+          - 'valor' (int): Quantidade de pessoas em cada grupo de idade.
+          - 'ano' (int): Ano de referência dos dados.
           - 'grupo_idade' (str): Descrição do grupo de idade.
+          - 'footnote' (str): Nota indicando o ano do Censo correspondente.
+
+  Example:
+      >>> get_population_age_group()
+          valor   ano    grupo_idade               footnote
+      0   3200   2022   0 a 4 anos     Censo do ano de 2022
+      1   3100   2022   5 a 9 anos     Censo do ano de 2022
+      ...
+
+  Raises:
+      ValueError: Se não houver dados disponíveis para o ano especificado.
+      KeyError: Se as colunas esperadas não forem encontradas na resposta da API.
   """
   age_group_years = ['last', '2010', '2022']
   year = verify_closest_year(year, age_group_years)
@@ -148,15 +193,32 @@ def get_population_age_group(year='last') -> pd.DataFrame:
 
 def get_total_pib(year='last')-> pd.Series:
   """
-  Recupera o valor total do PIB (Produto Interno Bruto) de Floriano no ano especificado.
+  Retorna o valor total do PIB (Produto Interno Bruto) do município de Floriano (PI)
+  para um ano específico ou para o dado mais recente disponível.
+
+  O valor retornado é convertido de milhares de reais para reais e inclui uma nota
+  indicando o ano de referência do dado.
 
   Args:
-      year (str, optional): Ano da consulta. Por padrão, busca o dado mais recente ('last').
+      year (str or int, optional): Ano desejado no formato 'YYYY' ou 'last' (padrão),
+          que retorna o dado mais recente disponível.
 
   Returns:
-      pd.Series: Série com as seguintes chaves:
-          - 'total' (int): Valor total do PIB em reais (convertido de milhares).
+      pd.Series: Série contendo:
+          - 'total' (float): Valor total do PIB em reais.
           - 'ano' (int): Ano de referência.
+          - 'footnote' (str): Nota indicando o ano do dado utilizado.
+
+  Example:
+      >>> get_total_pib()
+      total        134521000.0
+      ano                 2021
+      footnote    Censo do ano de 2021
+      dtype: object
+
+  Raises:
+      ValueError: Se não houver dados disponíveis para o ano especificado.
+      KeyError: Se as colunas esperadas não forem encontradas na resposta da API.
   """
   total_pib_years = ['last'] + [str(year) for year in range(2010, 2022)]
   year = verify_closest_year(year, total_pib_years)
@@ -184,13 +246,36 @@ def get_total_pib(year='last')-> pd.Series:
   
 def get_top_population_cities(year='last')-> pd.DataFrame:
   """
-  Recupera os 10 municípios mais populosos do estado do Piauí com base no último Censo disponível.
+  Retorna os 10 municípios mais populosos do estado do Piauí para um ano específico
+  ou para o dado mais recente disponível.
+
+  A função utiliza os dados oficiais do Censo ou, caso não haja dado oficial para o ano
+  solicitado, retorna uma estimativa com base em projeções populacionais do IBGE.
+
+  O resultado inclui a população de cada município, o nome do município, o ano de referência
+  e uma nota de rodapé indicando se o dado é oficial ou estimado.
+
+  Args:
+      year (str or int, optional): Ano desejado no formato 'YYYY' ou 'last' (padrão),
+          que retorna o dado mais recente disponível.
 
   Returns:
-      pd.DataFrame: DataFrame com as colunas:
-          - 'populacao' (int): Quantidade de habitantes.
-          - 'municipio' (str): Nome do município.
+      pd.DataFrame: DataFrame contendo as colunas:
+          - 'populacao' (int): Quantidade de habitantes do município.
+          - 'municipio' (str): Nome do município (sem sufixo " (PI)").
           - 'ano' (int): Ano de referência.
+          - 'footnote' (str): Indicação de Censo oficial ou estimativa.
+
+  Example:
+      >>> get_top_population_cities()
+          populacao     municipio   ano                footnote
+      0     868075   Teresina      2022   Censo oficial do ano de 2022
+      1     163000   Parnaíba      2022   Censo oficial do ano de 2022
+      ...
+
+  Raises:
+      ValueError: Se não houver dados disponíveis para o ano especificado.
+      KeyError: Se as colunas esperadas não estiverem presentes na resposta.
   """
   total_population_years = ['last'] + [str(year) for year in range(2010, 2025)]
   total_population_years.remove('2023')
@@ -262,17 +347,36 @@ def get_top_population_cities(year='last')-> pd.DataFrame:
 
 def get_population_by_race(level='6', local_code='2203909', year='last') -> pd.DataFrame:
   """
-  Recupera a distribuição percentual da população de Floriano por raça, com base no último Censo.
+  Retorna a distribuição percentual da população de um município (ou outro nível territorial)
+  por raça, com base nos dados do último Censo disponível ou de um ano especificado.
+
+  Por padrão, consulta o município de Floriano (PI). A função organiza o resultado com o 
+  percentual de cada grupo racial, o ano de referência e uma nota de rodapé indicando o ano do Censo.
 
   Args:
       level (str, optional): Nível territorial da consulta (padrão: '6' para município).
-      local_code (str, optional): Código IBGE do município (padrão: '2203909' para Floriano).
+      local_code (str, optional): Código IBGE do local de interesse 
+          (padrão: '2203909' para Floriano).
+      year (str or int, optional): Ano desejado no formato 'YYYY' ou 'last' (padrão),
+          que retorna o dado mais recente disponível.
 
   Returns:
-      pd.DataFrame: DataFrame com as colunas:
-          - 'porcentagem' (float): Percentual da população por raça.
+      pd.DataFrame: DataFrame contendo:
+          - 'porcentagem' (float): Percentual da população para cada raça.
           - 'ano' (int): Ano de referência.
           - 'raca' (str): Descrição da raça.
+          - 'footnote' (str): Indicação do ano do Censo utilizado.
+
+  Example:
+      >>> get_population_by_race()
+          porcentagem   ano      raca               footnote
+      0         62.5  2022     Parda     Censo do ano de 2022
+      1         28.0  2022    Branca     Censo do ano de 2022
+      ...
+
+  Raises:
+      ValueError: Se não houver dados disponíveis para o ano especificado.
+      KeyError: Se as colunas esperadas não estiverem presentes na resposta da API.
   """
   race_group_years = ['last', '2010', '2022']
   year = verify_closest_year(year, race_group_years)
@@ -306,20 +410,40 @@ def get_population_by_race(level='6', local_code='2203909', year='last') -> pd.D
 
 def get_population_by_local(level='6', local_code='2203909', year='last') -> pd.DataFrame:
   """
-  Recupera a distribuição percentual da população de Floriano entre áreas urbanas e rurais, com base no último Censo.
+  Retorna a distribuição percentual da população de um município (ou outro nível territorial) entre áreas urbanas e rurais, com base nos dados do Censo de 2022.
+
+  Embora aceite o parâmetro `year`, atualmente os dados estão disponíveis apenas para 2022,
+  sendo este ano utilizado sempre na consulta.
+
+  O resultado informa o percentual de população em cada localidade, o ano de referência 
+  e uma nota de rodapé indicando essa limitação.
 
   Args:
-    level (str, optional): Nível territorial da consulta (padrão: '6' para município).
-    local_code (str, optional): Código IBGE do município (padrão: '2203909' para Floriano).
-    year (str, optional): Ano da consulta. Por padrão, busca o dado mais recente ('last').
+      level (str, optional): Nível territorial da consulta (padrão: '6' para município).
+      local_code (str, optional): Código IBGE do local de interesse 
+          (padrão: '2203909' para Floriano).
+      year (str or int, optional): Ano desejado, ignorado na prática 
+          pois o dado está disponível somente em 2022.
 
   Returns:
-    pd.DataFrame: DataFrame com as colunas:
-      - 'porcentagem' (float): Percentual da população por localidade.
-      - 'ano' (int): Ano de referência.
-      - 'local' (str): Tipo de localidade ('Urbana' ou 'Rural').
+      pd.DataFrame: DataFrame contendo:
+          - 'porcentagem' (float): Percentual da população em cada localidade.
+          - 'ano' (int): Ano de referência (sempre 2022).
+          - 'local' (str): Tipo de localidade ('Urbana' ou 'Rural').
+          - 'footnote' (str): Nota indicando a limitação de ano fixo.
+
+  Example:
+      >>> get_population_by_local()
+          porcentagem   ano   local                       footnote
+      0         87.5  2022  Urbana  Dado disponível somente no ano de 2022
+      1         12.5  2022   Rural  Dado disponível somente no ano de 2022
+
+  Raises:
+      ValueError: Se houver erro na consulta à API.
+      KeyError: Se as colunas esperadas não estiverem presentes na resposta.
   """
-  year = '2022'
+  available_years = ['last', '2022']
+  year = verify_closest_year(year, available_years)
   population_by_local = '9923'
   local='1'
   population_perc = '1000093'
@@ -351,23 +475,30 @@ def get_pib_per_capita(year='last'):
   """
   Calcula o PIB per capita de Floriano com base no PIB total e na população estimada do ano correspondente.
 
-  O cálculo é feito utilizando a seguinte lógica:
-    - Busca o PIB mais recente disponível.
-    - Tenta obter a população estimada para o mesmo ano.
-    - Caso não esteja disponível, busca a população oficial daquele ano.
-    - Divide o valor total do PIB pelo número de habitantes.
+  O cálculo segue a lógica:
+    - Obtém o PIB total mais recente disponível para o ano solicitado.
+    - Busca a população estimada para o mesmo ano.
+    - Se a população estimada não estiver disponível, obtém a população oficial.
+    - Divide o PIB total pelo número de habitantes para calcular o PIB per capita.
 
   Nota:
-    Embora o dado não esteja disponível diretamente por API em fontes oficiais, o valor calculado se aproxima bastante de dados publicados.
-    Resultado calculado (2021): 24441.017451
-    Resultado de outras fontes (2021): 24441.02
+    Embora o valor não seja disponibilizado diretamente por APIs oficiais, o cálculo se aproxima bastante dos valores publicados.
+    Exemplo para 2021:
+      - Resultado calculado: 24441.017451
+      - Resultado de outras fontes: 24441.02
 
   Args:
-    year (str, optional): Ano da consulta. Por padrão, busca o dado mais recente ('last').
+      year (str or int, optional): Ano desejado no formato 'YYYY' ou 'last' (padrão),
+          que retorna o dado mais recente disponível.
 
-  pd.Series: Uma série contendo:
-    - 'pib_per_capita': (float) O PIB Per Capita de Floriano
-    - 'ano': (int) O ano de referência do dado retornado.
+  Returns:
+      pd.Series: Série pandas contendo:
+          - 'pib_per_capita' (float): PIB per capita calculado para Floriano.
+          - 'ano' (int): Ano de referência dos dados utilizados.
+          - 'footnote' (str): Nota indicando o ano dos dados usados no cálculo.
+
+  Raises:
+      ValueError: Se não for possível obter dados de PIB ou população para o ano especificado.
   """
   total_population_years = ['last'] + [str(year) for year in range(2010, 2025)]
   total_population_years.remove('2023')
@@ -393,25 +524,40 @@ def get_literacy_rate(level=6, code='2203909', year='last') -> pd.DataFrame:
   """
   Carrega e processa os dados da taxa de alfabetização a partir da tabela SIDRA (código 9543).
 
-  Os dados retornados correspondem à taxa de alfabetismo por grupo etário e localização 
-  (Município, Estado ou Brasil), conforme especificado nos parâmetros. O DataFrame retornado 
-  está limpo e pronto para análise ou visualização.
+  Os dados correspondem à taxa de alfabetização segmentada por grupo etário e localização territorial,
+  podendo ser município, estado ou Brasil, conforme os parâmetros. O DataFrame retornado está limpo,
+  com os dados prontos para análise ou visualização.
+
+  Nota:
+      Os dados estão disponíveis apenas para o ano de 2022, independentemente do parâmetro `year`.
 
   Args:
-      level (int): Nível territorial da consulta. Os valores comuns são:
+      level (int): Nível territorial da consulta. Valores comuns:
           - 6: Município
           - 2: Unidade da Federação (Estado)
           - 1: Brasil
-      code (str): Código IBGE do território consultado. Por padrão, '2203909' representa o município de Floriano (PI).
-      year (str): Ano da consulta. Pode ser um ano específico (ex: '2022') ou 'last' para pegar o dado mais recente disponível.
+      code (str): Código IBGE do território consultado. Exemplo padrão: '2203909' (Floriano, PI).
+      year (str or int): Ano da consulta, ignorado na prática pois os dados são fixos em 2022.
 
   Returns:
-      pd.DataFrame: DataFrame com as colunas:
-          - 'medida': Tipo de medida (ex: percentual ou número absoluto)
-          - 'quantidade': Valor da medida
-          - 'grupo': Grupo populacional (ex: faixa etária)
-          - 'local': Nome do local (ex: Floriano, Piauí, Brasil)
-          - 'ano': Ano do dado
+      pd.DataFrame: DataFrame com as seguintes colunas:
+          - 'medida' (str): Tipo de medida (ex: percentual, número absoluto).
+          - 'quantidade' (float): Valor numérico da medida.
+          - 'grupo' (str): Grupo populacional (ex: faixa etária).
+          - 'local' (str): Nome do local (ex: Floriano, Piauí, Brasil).
+          - 'ano' (int): Ano de referência dos dados.
+          - 'footnote' (str): Nota informando a limitação temporal dos dados.
+
+  Raises:
+      ValueError: Se a consulta à API falhar ou retornar dados inconsistentes.
+      KeyError: Se as colunas esperadas não estiverem presentes na resposta.
+
+  Example:
+      >>> df = get_literacy_rate(level=6, code='2203909')
+      >>> df.head()
+        medida  quantidade       grupo    local   ano                       footnote
+      0  %      92.5        15 a 24 anos  Floriano 2022  Dado disponível somente no ano de 2022
+      ...
   """
   
   literacy_rate = sd.get_table(
@@ -438,7 +584,38 @@ def get_literacy_rate(level=6, code='2203909', year='last') -> pd.DataFrame:
   return literacy_rate
 
 def get_crop_production(level="6",local_code="2203909", start_year=2010, end_year=2025, top_crops=3)-> pd.DataFrame:
-  """Carrega e processa os dados das Lavouras."""
+  """
+  Carrega e processa os dados de produção das lavouras temporárias e permanentes
+  para um determinado nível territorial e código IBGE, retornando os principais cultivos
+  por ano dentro do intervalo especificado.
+
+  A função utiliza um cache interno para otimizar consultas repetidas no mesmo nível
+  e localidade, evitando múltiplas chamadas à API para os mesmos dados.
+
+  Args:
+      level (str, optional): Nível territorial da consulta (ex: '6' para município).
+          Padrão é '6' (município).
+      local_code (str, optional): Código IBGE do local de interesse.
+          Padrão é '2203909' (Floriano, PI).
+      start_year (int, optional): Ano inicial do intervalo para filtragem dos dados.
+          Padrão é 2010.
+      end_year (int, optional): Ano final do intervalo para filtragem dos dados.
+          Padrão é 2025.
+      top_crops (int, optional): Quantidade dos principais cultivos (por produção) a retornar
+          para cada ano dentro do intervalo. Padrão é 3.
+
+  Returns:
+      pd.DataFrame: DataFrame contendo as colunas:
+          - 'medida' (str): Unidade de medida (ex: Toneladas).
+          - 'quantidade' (int): Quantidade produzida na unidade informada.
+          - 'ano' (int): Ano da produção.
+          - 'produto' (str): Nome do cultivo/lavoura.
+
+  Observações:
+      - A função filtra para valores de produção maiores que zero e unidade em toneladas.
+      - A cache interna `crops_dfs` armazena os dados carregados para evitar múltiplas consultas
+        ao SIDRA para o mesmo nível e localidade.
+  """
   key = f"{level}_{local_code}"
   
   crops = crops_dfs.get(key)

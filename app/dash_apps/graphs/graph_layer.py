@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 from plotly.graph_objs import Figure
-from app.dash_apps.data import data_layer as data, population as pop
+from app.dash_apps.data import data_layer as data, population as pop, economy as econ
 import plotly.graph_objects as go
 
 COLOR_PALETTE = [
@@ -208,7 +208,6 @@ def get_location_distribution_info(level: str = '6', local_code: str = '2203909'
 
   return distribuition.iloc[0]['footnote']
 
-
 def create_literacy_table(level: str = '6', local_code: str = '2203909', year: str = 'last')->Figure:
   df = data.get_literacy_rate(level, local_code, year)
   values = []
@@ -240,7 +239,6 @@ def create_literacy_table(level: str = '6', local_code: str = '2203909', year: s
     paper_bgcolor='rgba(0,0,0,0)',
   )
   return graph
-
 
 def create_comparison_literacy(year='last'):
   """
@@ -333,7 +331,7 @@ def get_metric_total_pib(year='last', format: bool = True):
   Returns:
     str: PIB formatado.
   """
-  value = data.get_total_pib(year)['total']
+  value = econ.get_total_pib(year)['total']
   if format:
     moeda = format_pib_value(value)
   else: 
@@ -350,7 +348,7 @@ def get_metric_total_pib_info(year='last'):
   Returns:
     str: Texto com o ano do censo usado para o PIB.
   """
-  return data.get_total_pib(year)['footnote']
+  return econ.get_total_pib(year)['footnote']
 
 def get_metric_pib_per_capita(year='last', format: bool = True):
   """
@@ -363,7 +361,7 @@ def get_metric_pib_per_capita(year='last', format: bool = True):
   Returns:
     str: PIB formatado.
   """
-  value = data.get_pib_per_capita(year)['pib_per_capita']
+  value = econ.get_pib_per_capita(year)['pib_per_capita']
   if format:
     moeda = format_pib_value(value)
   else: 
@@ -380,11 +378,11 @@ def get_metric_pib_per_capita_info(year='last'):
   Returns:
     str: Texto com o ano do censo usado para o PIB.
   """
-  return data.get_pib_per_capita(year)['footnote']
+  return econ.get_pib_per_capita(year)['footnote']
 
 def create_top_crops(level="6",local_code="2203909", start_year=2010, end_year=2025, top_crops=3):
   
-  top_crops = data.get_crop_production(level, local_code, start_year, end_year, top_crops)
+  top_crops = econ.get_crop_production(level, local_code, start_year, end_year, top_crops)
   fig = None
   
   if start_year < end_year:  

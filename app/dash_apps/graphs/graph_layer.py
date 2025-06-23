@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 from plotly.graph_objs import Figure
-from app.dash_apps.data import data_layer as data
+from app.dash_apps.data import data_layer as data, population as pop
 import plotly.graph_objects as go
 
 COLOR_PALETTE = [
@@ -55,7 +55,7 @@ def create_age_pyramid(year='last')->Figure:
     plotly.graph_objs.Figure: Gráfico de barras horizontais com idade versus população.
   """
   graph = px.bar(
-    data_frame=data.get_population_age_group(year),
+    data_frame= pop.get_population_age_group(year),
     x='valor',
     y='grupo_idade',
     orientation='h',
@@ -74,7 +74,7 @@ def create_age_pyramid(year='last')->Figure:
 
 def get_age_pyramid_info(year='last'):
   
-  df = data.get_population_age_group(year)
+  df = pop.get_population_age_group(year)
   return df.iloc[0]['footnote']
 
 def create_most_populated_cities(year='last')->Figure:
@@ -85,7 +85,7 @@ def create_most_populated_cities(year='last')->Figure:
   Returns:
     plotly.graph_objs.Figure: Gráfico com população por município.
   """
-  df = data.get_top_population_cities(year)
+  df = pop.get_top_population_cities(year)
   
   floriano_idx = df[df['municipio'] == "Floriano"].index[0]
   colors = [COLOR_PALETTE[0],] * len(df) 
@@ -121,7 +121,7 @@ def create_most_populated_cities(year='last')->Figure:
   return fig
 
 def get_most_populated_cities_info(year='last'):
-  df = data.get_top_population_cities(year)
+  df = pop.get_top_population_cities(year)
   return df.iloc[0]['footnote']
 
 def create_race_distribution(level: str = '6', local_code: str = '2203909', year='last')->Figure:
@@ -135,7 +135,7 @@ def create_race_distribution(level: str = '6', local_code: str = '2203909', year
   Returns:
     plotly.graph_objs.Figure: Gráfico de pizza com porcentagem por raça.
   """
-  df = data.get_population_by_race(level, local_code, year).sort_values(ascending=True,by=['porcentagem'])
+  df = pop.get_population_by_race(level, local_code, year).sort_values(ascending=True,by=['porcentagem'])
   
   formatted_values = [f"{v:.2f}" for v in df['porcentagem']]
   graph = px.bar(
@@ -156,12 +156,12 @@ def create_race_distribution(level: str = '6', local_code: str = '2203909', year
   return graph
 
 def get_race_distribution_info(level: str = '6', local_code: str = '2203909', year: str = 'last')->Figure:
-  distribuition = data.get_population_by_race(level, local_code, year)
+  distribuition = pop.get_population_by_race(level, local_code, year)
 
   return distribuition.iloc[0]['footnote']
 
 def get_location_distribution_info(level: str = '6', local_code: str = '2203909', year: str = 'last')->Figure:
-  distribuition = data.get_population_by_race(level, local_code, year)
+  distribuition = pop.get_population_by_race(level, local_code, year)
 
   return distribuition.iloc[0]['footnote']
 
@@ -178,7 +178,7 @@ def create_location_distribution(level: str = '6', local_code: str = '2203909', 
     plotly.graph_objs.Figure: Gráfico de pizza com porcentagem por zona (urbana/rural).
   """
   graph = px.pie(
-    data_frame=data.get_population_by_local(level, local_code, year),
+    data_frame=pop.get_population_by_local(level, local_code, year),
     names='local',
     values='porcentagem',
     labels={'local':"Zona", 'porcentagem': "Porcentagem"},
@@ -204,7 +204,7 @@ def get_location_distribution_info(level: str = '6', local_code: str = '2203909'
   Returns:
     plotly.graph_objs.Figure: Gráfico de pizza com porcentagem por zona (urbana/rural).
   """
-  distribuition = data.get_population_by_local(level, local_code, year)
+  distribuition = pop.get_population_by_local(level, local_code, year)
 
   return distribuition.iloc[0]['footnote']
 
@@ -308,7 +308,7 @@ def get_metric_total_population(year='last'):
   Returns:
     int: População total.
   """
-  return data.get_population_total(year)['total_populacao']
+  return pop.get_population_total(year=year)['total_populacao']
 
 def get_metric_total_population_info(year='last'):
   """
@@ -320,7 +320,7 @@ def get_metric_total_population_info(year='last'):
   Returns:
     str: Texto com o ano do censo usado.
   """
-  return data.get_population_total(year)['footnote']
+  return pop.get_population_total(year=year)['footnote']
 
 def get_metric_total_pib(year='last', format: bool = True):
   """

@@ -167,3 +167,28 @@ def get_location_distribution_info(level: str = '6', local_code: str = '2203909'
   distribuition = pop.get_population_by_local(level, local_code, year)
 
   return distribuition.iloc[0]['footnote']
+
+
+def get_metric_total_population(year='last'):
+  """
+  Obtém a população total de Floriano para o ano especificado.
+
+  Args:
+    year (str): Ano da consulta (padrão 'last').
+
+  Returns:
+    int: População total.
+  """
+  return pop.get_population_total(year=year)['total_populacao']
+
+def get_metric_total_population_info(year='last'):
+  """
+  Retorna o ano de referência da população total consultada.
+
+  Args:
+    year (str): Ano da consulta (padrão 'last').
+
+  Returns:
+    str: Texto com o ano do censo usado.
+  """
+  return pop.get_population_total(year=year)['footnote']

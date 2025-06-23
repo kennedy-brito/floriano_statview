@@ -1,8 +1,9 @@
 import pandas as pd
 import plotly.express as px
 from plotly.graph_objs import Figure
-from app.dash_apps.data import education as educ, population as pop, economy as econ
+from app.dash_apps.data import education as educ, economy as econ
 import plotly.graph_objects as go
+
 from app.dash_apps.graphs.utils import format_pib_value
 from app.dash_apps.graphs.constants import *
 
@@ -93,30 +94,6 @@ def create_comparison_literacy(year='last'):
 def get_literacy_rate_info(year='last'):
   floriano_dt = educ.get_literacy_rate(level= 6,code=2203909, year=year)
   return floriano_dt.iloc[0]['footnote']
-
-def get_metric_total_population(year='last'):
-  """
-  Obtém a população total de Floriano para o ano especificado.
-
-  Args:
-    year (str): Ano da consulta (padrão 'last').
-
-  Returns:
-    int: População total.
-  """
-  return pop.get_population_total(year=year)['total_populacao']
-
-def get_metric_total_population_info(year='last'):
-  """
-  Retorna o ano de referência da população total consultada.
-
-  Args:
-    year (str): Ano da consulta (padrão 'last').
-
-  Returns:
-    str: Texto com o ano do censo usado.
-  """
-  return pop.get_population_total(year=year)['footnote']
 
 def get_metric_total_pib(year='last', format: bool = True):
   """

@@ -1,6 +1,6 @@
 
 from dash import html, dcc, callback, Output, Input
-from app.dash_apps.graphs import graph_layer as graph
+from app.dash_apps.graphs.education import *
 from app.dash_apps.graphs.demographics import *
 from app.dash_apps.graphs.economy import *
 
@@ -287,7 +287,7 @@ def create_literacy_tabs_card()-> html.Div:
                         children=[
                             dcc.Graph(
                                 id="literacy-table", 
-                                figure=graph.create_literacy_table()
+                                figure=create_literacy_table()
                                 )
                             ],
                         ),
@@ -297,13 +297,13 @@ def create_literacy_tabs_card()-> html.Div:
                         children=[
                             dcc.Graph(
                                 id="comparison-literacy",
-                                figure=graph.create_comparison_literacy()
+                                figure=create_comparison_literacy()
                                 )
                             ],
                         ),
                     ],
                 )
-            ,html.P(graph.get_literacy_rate_info() ,id="literacy-rate-footnote", className='footnote')
+            ,html.P(get_literacy_rate_info() ,id="literacy-rate-footnote", className='footnote')
             ],
         className="graph-card card",
         )

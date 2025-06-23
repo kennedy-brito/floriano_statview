@@ -3,6 +3,7 @@ import plotly.express as px
 from plotly.graph_objs import Figure
 import plotly.graph_objects as go
 
+from app.dash_apps.data import education as educ
 from app.dash_apps.graphs.constants import *
 
 def create_literacy_table(level: str = '6', local_code: str = '2203909', year: str = 'last')->Figure:

@@ -1,6 +1,6 @@
 from dash import Dash, html
 from flask import Flask
-from app.dash_apps.graphs import graph_layer as graph
+from app.dash_apps.graphs import education as graph
 from . import components as comp
 
 def create_layout():

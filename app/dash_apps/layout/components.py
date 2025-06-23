@@ -1,6 +1,7 @@
 
 from dash import html, dcc, callback, Output, Input
 from app.dash_apps.graphs import graph_layer as graph
+from app.dash_apps.graphs.demographics import *
 
 city_code_options = {
     'Rio Branco - AC': {'level': 6, 'code': '1200401'},
@@ -85,20 +86,20 @@ outputs_mapping_graphs = {
     "total_population_metric": graph.get_metric_total_population,
     "total_pib_metric": graph.get_metric_total_pib,
     "pib_per_capita_metric": graph.get_metric_pib_per_capita,
-    'location-distribution-graph': graph.create_location_distribution,
-    'age-pyramid-graph': graph.create_age_pyramid,
-    'race-distribution-graph': graph.create_race_distribution,
-    'most-populated-cities-graph': graph.create_most_populated_cities
+    'location-distribution-graph': create_location_distribution,
+    'age-pyramid-graph': create_age_pyramid,
+    'race-distribution-graph': create_race_distribution,
+    'most-populated-cities-graph': create_most_populated_cities
 }
 
 outputs_mapping_infos = {
     "total_population_footnote": graph.get_metric_total_population_info,
     "total_pib_footnote": graph.get_metric_total_pib_info,
     "pib_per_capita_footnote": graph.get_metric_pib_per_capita_info,
-    'location-distribution-footnote': graph.get_location_distribution_info,
-    'age-pyramid-footnote': graph.get_age_pyramid_info,
-    'race-distribution-footnote': graph.get_race_distribution_info,
-    'most-populated-cities-footnote': graph.get_most_populated_cities_info
+    'location-distribution-footnote': get_location_distribution_info,
+    'age-pyramid-footnote': get_age_pyramid_info,
+    'race-distribution-footnote': get_race_distribution_info,
+    'most-populated-cities-footnote': get_most_populated_cities_info
 }
 
 def get_year_select_card():
@@ -165,8 +166,8 @@ def update_city_location_interactive(location_key)-> dict:
     """Atualiza o gráfico de distribuição urbana/rural baseado na localização selecionada."""
     location= city_code_options[location_key]
     return [
-        graph.create_location_distribution(level=location['level'], local_code=location['code']),
-        graph.get_location_distribution_info(level=location['level'], local_code=location['code'])]
+        create_location_distribution(level=location['level'], local_code=location['code']),
+        get_location_distribution_info(level=location['level'], local_code=location['code'])]
   
 def create_city_location_graph_card()-> html.Div:
     """Retorna o card de comparação de zona urbana/rural com dropdown interativo."""
@@ -193,8 +194,8 @@ def update_state_location_interactive(location_key)-> dict:
     """Atualiza o gráfico de distribuição urbana/rural baseado na localização selecionada."""
     location= state_code_options[location_key]
     return [
-        graph.create_location_distribution(level=location['level'], local_code=location['code']),
-        graph.get_location_distribution_info(level=location['level'], local_code=location['code'])]
+        create_location_distribution(level=location['level'], local_code=location['code']),
+        get_location_distribution_info(level=location['level'], local_code=location['code'])]
   
 def create_state_location_graph_card()-> html.Div:
     """Retorna o card de comparação de zona urbana/rural com dropdown interativo."""
@@ -226,8 +227,8 @@ def update_race_city_interactive(location_key, year):
     
     location= city_code_options[location_key]
     return [
-        graph.create_race_distribution(level=location['level'], local_code=location['code'], year=year),
-        graph.get_race_distribution_info(level=location['level'], local_code=location['code'], year=year)]
+        create_race_distribution(level=location['level'], local_code=location['code'], year=year),
+        get_race_distribution_info(level=location['level'], local_code=location['code'], year=year)]
 
 def create_race_city_graph_card()-> html.Div:
     """Retorna o card de comparação de raça com dropdown interativo."""
@@ -255,8 +256,8 @@ def update_race_state_interactive(location_key, year):
     
     location= state_code_options[location_key]
     return [
-        graph.create_race_distribution(level=location['level'], local_code=location['code'], year=year),
-        graph.get_race_distribution_info(level=location['level'], local_code=location['code'], year=year)]
+        create_race_distribution(level=location['level'], local_code=location['code'], year=year),
+        get_race_distribution_info(level=location['level'], local_code=location['code'], year=year)]
 
 def create_race_state_graph_card()-> html.Div:
     """Retorna o card de comparação de raça com dropdown interativo."""

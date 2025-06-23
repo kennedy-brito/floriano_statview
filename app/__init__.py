@@ -1,6 +1,8 @@
 from flask import Flask
-from app.dash_apps.layout import composicao_pib, general_information_dashboard as general_info
+from app.dash_apps.layout import composicao_pib
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
+
+from app.dash_apps.layout.dashboards import general_information_dashboard as general_info
 
 DASH_APPS = {
   '/floriano-statview': (general_info.create_app, "Floriano Statview"),

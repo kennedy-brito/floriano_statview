@@ -1,7 +1,6 @@
 from dash import Dash, html
 from flask import Flask
-from app.dash_apps.graphs import education as graph
-from . import components as comp
+from app.dash_apps.layout.components import components as comp
 
 def create_layout():
   """Cria o layout do aplicativo Dash."""

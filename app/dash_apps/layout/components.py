@@ -2,6 +2,7 @@
 from dash import html, dcc, callback, Output, Input
 from app.dash_apps.graphs import graph_layer as graph
 from app.dash_apps.graphs.demographics import *
+from app.dash_apps.graphs.economy import *
 
 city_code_options = {
     'Rio Branco - AC': {'level': 6, 'code': '1200401'},
@@ -84,8 +85,8 @@ years = ['Mais Recente'] + [str(i) for i in range(2010,2026)]
 
 outputs_mapping_graphs = {
     "total_population_metric": get_metric_total_population,
-    "total_pib_metric": graph.get_metric_total_pib,
-    "pib_per_capita_metric": graph.get_metric_pib_per_capita,
+    "total_pib_metric": get_metric_total_pib,
+    "pib_per_capita_metric": get_metric_pib_per_capita,
     'location-distribution-graph': create_location_distribution,
     'age-pyramid-graph': create_age_pyramid,
     'race-distribution-graph': create_race_distribution,
@@ -94,8 +95,8 @@ outputs_mapping_graphs = {
 
 outputs_mapping_infos = {
     "total_population_footnote": get_metric_total_population_info,
-    "total_pib_footnote": graph.get_metric_total_pib_info,
-    "pib_per_capita_footnote": graph.get_metric_pib_per_capita_info,
+    "total_pib_footnote": get_metric_total_pib_info,
+    "pib_per_capita_footnote": get_metric_pib_per_capita_info,
     'location-distribution-footnote': get_location_distribution_info,
     'age-pyramid-footnote': get_age_pyramid_info,
     'race-distribution-footnote': get_race_distribution_info,
@@ -321,7 +322,7 @@ def update_top_crops_graph(start_year, end_year, top_crops):
         start_year, end_year = end_year, start_year
         footnote = f"O intervalo foi ajustado automaticamente para {start_year}–{end_year}."
     
-    top_crops_graph = graph.create_top_crops(start_year=start_year, end_year= end_year, top_crops=top_crops)
+    top_crops_graph = create_top_crops(start_year=start_year, end_year= end_year, top_crops=top_crops)
     
     return [top_crops_graph, footnote]
 
